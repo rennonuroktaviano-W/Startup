@@ -1,4 +1,8 @@
 import type { ReactNode } from "react";
+import { toneBg } from "@/lib/tone";
+
+export type { Tone } from "@/lib/tone";
+export { toneBg };
 
 export type NavItem = {
   label: string;
@@ -25,14 +29,6 @@ export const mobileDockItems = defaultNavItems.filter((i) =>
 export const mobileMoreItems = defaultNavItems.filter(
   (i) => !mobileDockItems.some((m) => m.href === i.href),
 );
-
-export const toneBg: Record<string, string> = {
-  purple: "bg-purple text-white",
-  sky: "bg-sky text-ink",
-  coral: "bg-coral text-ink",
-  lemon: "bg-lemon text-ink",
-  mint: "bg-mint text-ink",
-};
 
 export type MenuAnchor = "menu" | "more";
 
