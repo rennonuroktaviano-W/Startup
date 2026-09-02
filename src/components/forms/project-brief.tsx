@@ -88,7 +88,7 @@ export function ProjectBriefForm({ prefillType = "" }: { prefillType?: string })
   const [status, setStatus] = useState<"idle" | "loading" | "success" | "error">("idle");
   const [result, setResult] = useState<SubmitInquiryResult | null>(null);
   const [serverMessage, setServerMessage] = useState("");
-  const startedAt = useRef(Date.now());
+  const startedAt = useRef<number | null>(null);
 
   const set = (patch: Partial<FormState>) => {
     setForm((f) => ({ ...f, ...patch }));
@@ -123,6 +123,7 @@ export function ProjectBriefForm({ prefillType = "" }: { prefillType?: string })
 
   const goNext = () => {
     if (!validateStep(step)) return;
+    if (!startedAt.current) startedAt.current = Date.now();
     setStep((s) => Math.min(s + 1, 3));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -169,7 +170,7 @@ export function ProjectBriefForm({ prefillType = "" }: { prefillType?: string })
       budgetRange: form.budgetRange,
       consent: form.consent,
       honeypot: "",
-      startedAt: startedAt.current,
+      startedAt: startedAt.current ?? Date.now(),
     });
     setResult(res);
     if (res.ok) {
