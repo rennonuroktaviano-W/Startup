@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, LogOut } from "lucide-react";
+import { LayoutDashboard, LogOut, FileText, FolderKanban, Newspaper, HelpCircle, Users, Image as ImageIcon, Settings, Navigation, MessageSquareQuote } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import type { SessionUser } from "@/lib/auth/session";
 import { logout } from "@/actions/auth";
@@ -7,7 +7,32 @@ import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
 import { toySwitchFromRole } from "@/lib/admin-ui";
 
 const navItems = [
-  { section: "Utama", items: [{ label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard }] },
+  {
+    section: "Utama",
+    items: [
+      { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+    ],
+  },
+  {
+    section: "Konten",
+    items: [
+      { label: "Layanan", href: "/admin/services", icon: FileText },
+      { label: "Proyek", href: "/admin/projects", icon: FolderKanban },
+      { label: "Blog", href: "/admin/blog", icon: Newspaper },
+      { label: "FAQ", href: "/admin/faqs", icon: HelpCircle },
+      { label: "Testimoni", href: "/admin/testimonials", icon: MessageSquareQuote },
+      { label: "Klien", href: "/admin/clients", icon: Users },
+      { label: "Tim", href: "/admin/team", icon: Users },
+    ],
+  },
+  {
+    section: "Website",
+    items: [
+      { label: "Media", href: "/admin/media", icon: ImageIcon },
+      { label: "Navigasi", href: "/admin/navigation", icon: Navigation },
+      { label: "Pengaturan", href: "/admin/settings", icon: Settings },
+    ],
+  },
 ];
 
 export function AdminShell({
