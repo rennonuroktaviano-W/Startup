@@ -63,9 +63,13 @@ test("§33.3 alur lengkap: brief → prospek di admin → konsep project dipubli
   await expect(page.getByText(reference).first()).toBeVisible();
   await page.getByText(reference).first().click();
   await expect(page).toHaveURL(/\/admin\/leads\/[a-z0-9]+/);
+  await expect(page.getByRole("heading", { name: /Pengujian/ })).toBeVisible();
 
   // 4) Admin: tambah catatan internal.
-  await page.getByPlaceholder(/Catat hasil diskusi/).fill("Catatan dari sesi e2e.");
+  const noteInput = page.getByPlaceholder(/Catat hasil diskusi/);
+  await expect(noteInput).toBeVisible();
+  await noteInput.fill("Catatan dari sesi e2e.");
+  await expect(noteInput).toHaveValue("Catatan dari sesi e2e.");
   await page.getByRole("button", { name: /tambah catatan/i }).click();
   await expect(page.getByText("Catatan dari sesi e2e.")).toBeVisible();
 
@@ -73,11 +77,10 @@ test("§33.3 alur lengkap: brief → prospek di admin → konsep project dipubli
   const conceptTitle = `Konsep e2e ${uniq()}`;
   await page.goto("/admin/projects/new");
   await page.getByPlaceholder(/E-Commerce Skincare/).fill(conceptTitle);
-  page.locator("label", { hasText: "Industri" }).locator("..").locator("input").fill("SaaS");
-  const artifacts = ["Challenge (JSON)", "Goals (JSON)", "Approach (JSON)", "Outcome (JSON)"];
-  for (const label of artifacts) {
-    const textarea = page.getByText(label).filter({ hasText: "JSON" }).locator("..").locator("textarea");
-    await textarea.fill(JSON.stringify(["poin"]));
+  await page.getByPlaceholder(/Fashion, F/).fill("SaaS");
+  const jsonAreas = page.locator('textarea[placeholder="[]"]');
+  for (let i = 0; i < 4; i++) {
+    await jsonAreas.nth(i).fill(JSON.stringify(["poin"]));
   }
   // Tipe proyek: Concept (default) — status: Published.
   await page.locator("label", { hasText: /^Status$/ }).locator("..").locator("select").selectOption("PUBLISHED");
