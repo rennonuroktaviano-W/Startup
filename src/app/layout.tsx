@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import { Fredoka, Plus_Jakarta_Sans } from "next/font/google";
 import { siteConfig } from "@/lib/site";
+import { getPublicSettings } from "@/lib/public-settings";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -17,23 +18,31 @@ const jakarta = Plus_Jakarta_Sans({
 
 const siteName = siteConfig.name;
 
-export const metadata: Metadata = {
-  metadataBase: new URL(siteConfig.siteUrl),
-  title: {
-    default: `${siteName} — Studio Website & Aplikasi`,
-    template: `%s — ${siteName}`,
-  },
-  description: siteConfig.defaultOgDescription,
-  openGraph: {
-    siteName,
-    type: "website",
-    locale: "id_ID",
-  },
-  robots: {
-    index: true,
-    follow: true,
-  },
-};
+export const dynamic = "force-dynamic";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const seo = await getPublicSettings();
+  return {
+    metadataBase: new URL(siteConfig.siteUrl),
+    title: {
+      default: seo.seoTitle,
+      template: `%s — ${siteName}`,
+    },
+    description: seo.seoDescription,
+    openGraph: {
+      siteName,
+      type: "website",
+      locale: "id_ID",
+      title: seo.seoTitle,
+      description: seo.seoDescription,
+      images: [{ url: new URL(seo.seoOgImage, siteConfig.siteUrl).toString() }],
+    },
+    robots: {
+      index: true,
+      follow: true,
+    },
+  };
+}
 
 const organizationJsonLd = {
   "@context": "https://schema.org",
