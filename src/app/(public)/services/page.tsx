@@ -1,8 +1,10 @@
 import { siteConfig } from "@/lib/site";
 import { buildMetadata } from "@/lib/seo";
+import { getPublishedServices } from "@/lib/public-data";
 import { ToyButton } from "@/components/ui/button";
+import { EmptyState } from "@/components/ui/empty-state";
 import { SectionHeader } from "@/components/public/section-header";
-import { ServiceFilter } from "@/components/public/service-filter";
+import { ServiceFilter, type ServiceCardInput } from "@/components/public/service-filter";
 import { Reveal } from "@/components/motion/reveal";
 
 export const metadata = buildMetadata({
@@ -11,7 +13,26 @@ export const metadata = buildMetadata({
     "Website company profile, landing page, web application, dashboard & admin CMS, UI implementation/redesign, dan maintenance. Lihat layanan KotakIde Studio.",
 });
 
-export default function ServicesPage() {
+const ICON_KEY_BY_SLUG: Record<string, ServiceCardInput["iconKey"]> = {
+  "company-profile": "Globe",
+  "landing-page": "MousePointerClick",
+  "web-application": "AppWindow",
+  "dashboard-admin-cms": "LayoutDashboard",
+  "ui-implementation-redesign": "SwatchBook",
+  "maintenance-optimization": "Wrench",
+};
+
+export default async function ServicesPage() {
+  const services = await getPublishedServices();
+  const cards: ServiceCardInput[] = services.map((s) => ({
+    slug: s.slug,
+    name: s.name,
+    iconKey: ICON_KEY_BY_SLUG[s.slug] ?? "LayoutDashboard",
+    tone: s.tone,
+    goal: s.goal,
+    shortDescription: s.shortDescription,
+    targetClient: s.targetClient,
+  }));
   return (
     <>
       <section className="relative overflow-hidden">
@@ -32,7 +53,15 @@ export default function ServicesPage() {
 
       <section className="mx-auto max-w-6xl px-5 pb-20 md:px-10">
         <Reveal>
-          <ServiceFilter />
+          {cards.length > 0 ? (
+            <ServiceFilter services={cards} />
+          ) : (
+            <EmptyState
+              tone="sky"
+              title="Belum ada layanan yang diterbitkan"
+              description="Daftar layanan akan tampil di sini segera setelah diterbitkan dari panel admin."
+            />
+          )}
         </Reveal>
       </section>
 

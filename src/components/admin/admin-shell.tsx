@@ -1,16 +1,30 @@
 import Link from "next/link";
-import { LayoutDashboard, LogOut, FileText, FolderKanban, Newspaper, HelpCircle, Users, Image as ImageIcon, Settings, Navigation, MessageSquareQuote } from "lucide-react";
+import { LayoutDashboard, LogOut, FileText, FolderKanban, Newspaper, HelpCircle, Users, Image as ImageIcon, Settings, Navigation, MessageSquareQuote, Inbox, ScrollText, UserCog } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import type { SessionUser } from "@/lib/auth/session";
 import { logout } from "@/actions/auth";
 import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
 import { toySwitchFromRole } from "@/lib/admin-ui";
+import { can, type Capability } from "@/lib/permissions";
 
-const navItems = [
+export type AdminNavItem = {
+  label: string;
+  href: string;
+  icon: React.ComponentType<{ className?: string }>;
+  capability?: Capability;
+};
+
+export type AdminNavGroup = {
+  section: string;
+  items: AdminNavItem[];
+}[];
+
+const navItems: AdminNavGroup = [
   {
     section: "Utama",
     items: [
       { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
+      { label: "Prospek", href: "/admin/leads", icon: Inbox },
     ],
   },
   {
@@ -33,6 +47,13 @@ const navItems = [
       { label: "Pengaturan", href: "/admin/settings", icon: Settings },
     ],
   },
+  {
+    section: "Sistem",
+    items: [
+      { label: "Audit Log", href: "/admin/audit-logs", icon: ScrollText, capability: "audit:read" },
+      { label: "Users", href: "/admin/users", icon: UserCog, capability: "users:manage" },
+    ],
+  },
 ];
 
 export function AdminShell({
@@ -43,6 +64,12 @@ export function AdminShell({
   children: React.ReactNode;
 }) {
   const roleLabel = toySwitchFromRole(user.role);
+  const visibleGroups = navItems
+    .map((group) => ({
+      ...group,
+      items: group.items.filter((item) => !item.capability || can(user.role, item.capability as Capability)),
+    }))
+    .filter((group) => group.items.length > 0);
 
   return (
     <div className="min-h-screen bg-paper">
@@ -60,7 +87,7 @@ export function AdminShell({
             </div>
           </Link>
           <nav className="flex-1 space-y-6 overflow-y-auto px-3 py-5" aria-label="Navigasi admin">
-            {navItems.map((group) => (
+            {visibleGroups.map((group) => (
               <div key={group.section}>
                 <p className="mb-2 px-3 text-xs font-bold uppercase tracking-widest text-ink/45">
                   {group.section}
@@ -99,7 +126,7 @@ export function AdminShell({
         {/* Mobile: topbar + drawer */}
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b-2 border-ink bg-surface/90 px-4 py-3 backdrop-blur lg:hidden">
-            <AdminMobileNav navGroups={navItems} user={user} roleLabel={roleLabel} />
+            <AdminMobileNav navGroups={visibleGroups} user={user} roleLabel={roleLabel} />
             <Link href="/" className="flex items-center gap-2">
               <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-ink bg-lemon font-display text-xs font-bold">
                 KI
@@ -119,7 +146,7 @@ export function AdminShell({
   );
 }
 
-function SidebarLink({ item }: { item: { label: string; href: string; icon: React.ComponentType<{ className?: string }> } }) {
+function SidebarLink({ item }: { item: AdminNavItem }) {
   const Icon = item.icon;
   return (
     <Link
@@ -130,5 +157,3 @@ function SidebarLink({ item }: { item: { label: string; href: string; icon: Reac
     </Link>
   );
 }
-
-export type AdminNavGroup = typeof navItems;

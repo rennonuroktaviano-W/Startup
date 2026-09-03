@@ -1,6 +1,7 @@
 import { Sparkle } from "lucide-react";
 import { siteConfig } from "@/lib/site";
-import { servicesList, getFeaturedProjects, principles, homeFaqs } from "@/lib/content";
+import { getFeaturedProjects, principles } from "@/lib/content";
+import { getPublishedServices, getPublishedFaqs } from "@/lib/public-data";
 import { buildMetadata } from "@/lib/seo";
 import { ToyButton } from "@/components/ui/button";
 import { SectionHeader } from "@/components/public/section-header";
@@ -17,9 +18,11 @@ export const metadata = buildMetadata({
   description: siteConfig.description,
 });
 
-export default function HomePage() {
+export default async function HomePage() {
+  const [services, homeFaqs] = await Promise.all([getPublishedServices(), getPublishedFaqs()]);
   const featured = getFeaturedProjects();
   const hasWork = featured.length > 0;
+  const hasServices = services.length > 0;
 
   return (
     <>
@@ -71,13 +74,17 @@ export default function HomePage() {
           }
           subtitle="Setiap layanan dirancang sebagai solusi nyata, bukan sekadar jasa pasang template. Pilih yang paling cocok dengan kondisi kamu."
         />
-        <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {servicesList.map((service, i) => (
-            <Reveal key={service.slug} delay={Math.min(i, 3) * 0.05}>
-              <ServiceCard service={service} />
-            </Reveal>
-          ))}
-        </div>
+        {hasServices ? (
+          <div className="mt-10 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+            {services.map((service, i) => (
+              <Reveal key={service.slug} delay={Math.min(i, 3) * 0.05}>
+                <ServiceCard service={service} />
+              </Reveal>
+            ))}
+          </div>
+        ) : (
+          <p className="mt-10 text-ink/60">Belum ada layanan yang diterbitkan.</p>
+        )}
       </section>
 
       {/* ---- Before / After ---- */}

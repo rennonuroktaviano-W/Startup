@@ -1,18 +1,17 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Check, CircleDollarSign, Clock3, Users } from "lucide-react";
-import { getService, projectsList } from "@/lib/content";
+import { getPublishedService } from "@/lib/public-data";
 import { buildMetadata } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import { type Tone, toneBg, toneSoft } from "@/lib/tone";
 import { ToyButton } from "@/components/ui/button";
 import { FaqAccordion } from "@/components/public/faq-accordion";
-import { ProjectCard } from "@/components/public/project-card";
 import { Reveal } from "@/components/motion/reveal";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const service = getService(slug);
+  const service = await getPublishedService(slug);
   if (!service) return buildMetadata({ title: "Layanan tidak ditemukan", noIndex: true });
   return buildMetadata({
     title: service.name,
@@ -23,12 +22,11 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function ServiceDetailPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const service = getService(slug);
+  const service = await getPublishedService(slug);
   if (!service) notFound();
 
   const Icon = service.icon;
   const tone = service.tone as Tone;
-  const related = projectsList.filter((p) => p.services.some((s) => s.slug === service.slug));
 
   return (
     <>
@@ -150,16 +148,6 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
               <p className="text-xs font-bold uppercase tracking-wide text-ink/60">Hasil akhir</p>
               <p className="mt-3 font-display text-xl font-semibold leading-snug text-ink">{service.outcome}</p>
             </div>
-            {related.length > 0 && (
-              <div className="mt-8">
-                <h3 className="font-display text-lg font-semibold text-ink">Proyek terkait</h3>
-                <div className="mt-4 space-y-4">
-                  {related.map((p) => (
-                    <ProjectCard key={p.slug} project={p} />
-                  ))}
-                </div>
-              </div>
-            )}
           </Reveal>
         </div>
       </section>
