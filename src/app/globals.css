@@ -197,3 +197,23 @@ html.motion-paused *::after {
 .animate-pop {
   animation: pop-in 0.3s cubic-bezier(0.2, 0.9, 0.3, 1.2) both;
 }
+/* ---- Motion intensity (Theme manager) ---- */
+html.motion-calm .animate-float,
+html.motion-calm .animate-orbit,
+html.motion-calm [data-motion-hero] * {
+  animation-duration: 9s !important;
+  animation-iteration-count: 1 !important;
+}
+html.motion-extra .animate-float {
+  animation: float-slow 3.5s ease-in-out infinite !important;
+}
+html.motion-extra .animate-orbit {
+  animation-duration: 10s !important;
+}
+
+/* ---- Decorations off (Theme manager) ---- */
+html.decorations-off .bg-grain,
+html.decorations-off [data-decor],
+html.decorations-off .deck-figure {
+  display: none !important;
+}

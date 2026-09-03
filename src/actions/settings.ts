@@ -46,13 +46,18 @@ export async function upsertSettingsBulk(entries: Record<string, string>) {
     Object.entries(entries).map(([key, value]) =>
       prisma.siteSetting.upsert({
         where: { key },
-        create: { key, valueJson: asSettingValue(value) },
-        update: { valueJson: asSettingValue(value) },
+        create: { key, valueJson: asSettingValue(value), isPublic: isPublicKey(key) },
+        update: { valueJson: asSettingValue(value), isPublic: isPublicKey(key) },
       })
     )
   );
   await logAudit({ actorId: session.user.id, action: "settings_update", entityType: "SiteSetting", summary: { keys: Object.keys(entries) } });
   return { ok: true };
+}
+
+/** Kunci publik yang boleh/bisa dibaca layout & publik tanpa bocorkan nilai internal. */
+function isPublicKey(key: string): boolean {
+  return key.startsWith("seo.") || key.startsWith("theme.");
 }
 
 export async function deleteSetting(key: string) {

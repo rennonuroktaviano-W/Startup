@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import { Fredoka, Plus_Jakarta_Sans } from "next/font/google";
 import { siteConfig } from "@/lib/site";
-import { getPublicSettings } from "@/lib/public-settings";
+import { getPublicSettings, themeVariables } from "@/lib/public-settings";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -54,10 +54,25 @@ const organizationJsonLd = {
   sameAs: [`https://wa.me/${siteConfig.whatsapp}`],
 };
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getPublicSettings();
+  const themeCss = themeVariables(settings.theme);
+  const motionIntensity = settings.theme.intensity;
+  const decorations = settings.theme.decorations;
+  const htmlClass = [
+    fredoka.variable,
+    jakarta.variable,
+    "h-full antialiased",
+    `motion-${motionIntensity}`,
+    decorations ? "" : "decorations-off",
+  ]
+    .filter(Boolean)
+    .join(" ");
+
   return (
-    <html lang="id" className={`${fredoka.variable} ${jakarta.variable} h-full antialiased`}>
+    <html lang="id" className={htmlClass}>
       <head>
+        <style dangerouslySetInnerHTML={{ __html: `:root{${themeCss};}` }} />
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
