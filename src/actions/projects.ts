@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { getRequiredSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
+import { saveRevision } from "@/lib/revisions";
+import { upsertRedirect } from "@/lib/redirects";
 
 const projectSchema = z.object({
   id: z.string().cuid().optional(),
@@ -69,6 +71,13 @@ export async function upsertProject(input: z.infer<typeof projectSchema>) {
     ? await prisma.project.update({ where: { id }, data })
     : await prisma.project.create({ data });
 
+  if (id) {
+    const prev = await prisma.project.findUnique({ where: { id }, select: { slug: true } });
+    if (prev && prev.slug !== record.slug) {
+      await upsertRedirect(`/work/${prev.slug}`, `/work/${record.slug}`);
+    }
+  }
+
   if (serviceIds) {
     await prisma.projectService.deleteMany({ where: { projectId: record.id } });
     if (serviceIds.length) {
@@ -77,6 +86,7 @@ export async function upsertProject(input: z.infer<typeof projectSchema>) {
   }
 
   await logAudit({ actorId: session.user.id, action: id ? "update" : "create", entityType: "Project", entityId: record.id, summary: { title: data.title, status: data.status } });
+  await saveRevision("Project", record.id, session.user.id, { ...data, serviceIds: serviceIds ?? [] });
   return { ok: true, id: record.id };
 }
 

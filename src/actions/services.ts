@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { getRequiredSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
+import { saveRevision } from "@/lib/revisions";
+import { upsertRedirect } from "@/lib/redirects";
 
 const serviceSchema = z.object({
   id: z.string().cuid().optional(),
@@ -54,6 +56,13 @@ export async function upsertService(input: z.infer<typeof serviceSchema>) {
     ? await prisma.service.update({ where: { id }, data })
     : await prisma.service.create({ data });
 
+  if (id) {
+    const prev = await prisma.service.findUnique({ where: { id }, select: { slug: true } });
+    if (prev && prev.slug !== record.slug) {
+      await upsertRedirect(`/services/${prev.slug}`, `/services/${record.slug}`);
+    }
+  }
+
   await logAudit({
     actorId: session.user.id,
     action: id ? "update" : "create",
@@ -61,6 +70,7 @@ export async function upsertService(input: z.infer<typeof serviceSchema>) {
     entityId: record.id,
     summary: { name: data.name, status: data.status },
   });
+  await saveRevision("Service", record.id, session.user.id, { ...data, bodyJson: data.bodyJson ?? null });
   return { ok: true, id: record.id };
 }
 

@@ -5,6 +5,8 @@ import { prisma } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { getRequiredSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
+import { saveRevision } from "@/lib/revisions";
+import { upsertRedirect } from "@/lib/redirects";
 
 // --- BLOG POST ---
 
@@ -63,7 +65,19 @@ export async function upsertBlogPost(input: z.infer<typeof blogSchema>) {
     if (tagIds.length)
       await prisma.postTag.createMany({ data: tagIds.map((t) => ({ postId: record.id, tagId: t })) });
   }
+  if (id) {
+    const prev = await prisma.blogPost.findUnique({ where: { id }, select: { slug: true } });
+    if (prev && prev.slug !== record.slug) {
+      await upsertRedirect(`/blog/${prev.slug}`, `/blog/${record.slug}`);
+    }
+  }
   await logAudit({ actorId: session.user.id, action: id ? "update" : "create", entityType: "BlogPost", entityId: record.id, summary: { title: data.title, status: data.status } });
+  await saveRevision("BlogPost", record.id, session.user.id, {
+    ...data,
+    bodyJson: data.bodyJson ?? null,
+    categoryIds: categoryIds ?? [],
+    tagIds: tagIds ?? [],
+  });
   return { ok: true, id: record.id };
 }
 

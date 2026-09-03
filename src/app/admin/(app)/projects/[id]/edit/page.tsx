@@ -1,6 +1,9 @@
 import { notFound } from "next/navigation";
 import { prisma } from "@/lib/db";
 import { ProjectForm } from "@/components/admin/cms/project-form";
+import { RevisionHistory } from "@/components/admin/cms/revision-history";
+import { listRevisions } from "@/lib/revisions";
+import { PreviewLink } from "@/components/admin/cms/preview-link";
 
 export const dynamic = "force-dynamic";
 
@@ -15,9 +18,10 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
   const project = await prisma.project.findUnique({ where: { id }, include: { projectServices: true } });
   if (!project) notFound();
 
-  const [services, clients] = await Promise.all([
+  const [services, clients, revisions] = await Promise.all([
     prisma.service.findMany({ where: { deletedAt: null }, select: { id: true, name: true }, orderBy: { sortOrder: "asc" } }),
     prisma.client.findMany({ where: { deletedAt: null }, select: { id: true, name: true }, orderBy: { name: "asc" } }),
+    listRevisions("Project", id),
   ]);
   return (
     <div className="mx-auto max-w-3xl">
@@ -42,6 +46,19 @@ export default async function EditProjectPage({ params }: { params: Promise<{ id
             serviceIds: project.projectServices.map((ps) => ps.serviceId),
             clientId: project.clientId ?? "",
           }}
+        />
+      </div>
+      <div className="mt-6 rounded-2xl border-2 border-ink bg-surface p-6 shadow-[3px_3px_0_0_var(--ink)]">
+        <PreviewLink entityType="Project" entityId={project.id} />
+      </div>
+      <div className="mt-6 rounded-2xl border-2 border-ink bg-surface p-6 shadow-[3px_3px_0_0_var(--ink)]">
+        <RevisionHistory
+          revisions={revisions.map((r) => ({
+            id: r.id,
+            versionNumber: r.versionNumber,
+            createdAt: r.createdAt,
+            author: r.author,
+          }))}
         />
       </div>
     </div>
