@@ -18,6 +18,10 @@ import {
   Settings,
   ScrollText,
   UserCog,
+  LayoutTemplate,
+  SearchCheck,
+  Palette,
+  Archive,
   type LucideIcon,
 } from "lucide-react";
 import type { SessionUser } from "@/lib/auth/session";
@@ -47,6 +51,10 @@ const ICONS: Record<string, LucideIcon> = {
   settings: Settings,
   scrollText: ScrollText,
   userCog: UserCog,
+  layout: LayoutTemplate,
+  search: SearchCheck,
+  palette: Palette,
+  archive: Archive,
 };
 
 export function AdminMobileNav({
