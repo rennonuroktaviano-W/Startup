@@ -1,15 +1,18 @@
 import { prisma } from "@/lib/db";
 import { getSettings } from "@/actions/settings";
+import { getSeoAudit } from "@/lib/seo-audit";
 import { SeoForm } from "@/components/admin/cms/seo-form";
+import { SeoAuditPanel } from "@/components/admin/cms/seo-audit-panel";
 
 export const dynamic = "force-dynamic";
 
 export const metadata = { title: "SEO & Redirect — Admin" };
 
 export default async function SeoAdminPage() {
-  const [settings, redirects] = await Promise.all([
+  const [settings, redirects, audit] = await Promise.all([
     getSettings(),
     prisma.redirect.findMany({ orderBy: { createdAt: "desc" } }),
+    getSeoAudit(),
   ]);
   return (
     <div className="mx-auto max-w-3xl">
@@ -26,6 +29,7 @@ export default async function SeoAdminPage() {
           }))}
         />
       </div>
+      <SeoAuditPanel audit={audit} />
     </div>
   );
 }
