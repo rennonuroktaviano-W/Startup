@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, LogOut, FileText, FolderKanban, Newspaper, HelpCircle, Users, Image as ImageIcon, Settings, Navigation, MessageSquareQuote, Inbox, ScrollText, UserCog, LayoutTemplate, SearchCheck, Palette, Archive } from "lucide-react";
+import { LayoutDashboard, LogOut, FileText, FolderKanban, Newspaper, HelpCircle, Users, Image as ImageIcon, Settings, Navigation, MessageSquareQuote, Inbox, ScrollText, UserCog, LayoutTemplate, SearchCheck, Palette, Archive, Tag, FolderTree } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import type { SessionUser } from "@/lib/auth/session";
 import { logout } from "@/actions/auth";
@@ -34,6 +34,8 @@ const navItems: AdminNavGroup = [
       { label: "Layanan", href: "/admin/services", icon: FileText, iconKey: "fileText" },
       { label: "Proyek", href: "/admin/projects", icon: FolderKanban, iconKey: "folderKanban" },
       { label: "Blog", href: "/admin/blog", icon: Newspaper, iconKey: "newspaper" },
+      { label: "Kategori Artikel", href: "/admin/blog/categories", icon: FolderTree, iconKey: "folderTree" },
+      { label: "Tag Artikel", href: "/admin/blog/tags", icon: Tag, iconKey: "tag" },
       { label: "FAQ", href: "/admin/faqs", icon: HelpCircle, iconKey: "helpCircle" },
       { label: "Testimoni", href: "/admin/testimonials", icon: MessageSquareQuote, iconKey: "quote" },
       { label: "Klien", href: "/admin/clients", icon: Users, iconKey: "users" },

@@ -277,6 +277,24 @@ export async function upsertBlogTag(input: z.infer<typeof tagSchema>) {
   return { ok: true, id: r.id };
 }
 
+export async function deleteBlogCategory(id: string) {
+  const s = await getRequiredSession(); requireCapability(s.user.role, "content:write");
+  const count = await prisma.postCategory.count({ where: { categoryId: id } });
+  if (count > 0) return { ok: false, error: `Kategori masih dipakai ${count} artikel. Hapus relasinya dulu.` } as const;
+  await prisma.blogCategory.delete({ where: { id } });
+  await logAudit({ actorId: s.user.id, action: "delete", entityType: "BlogCategory", entityId: id });
+  return { ok: true } as const;
+}
+
+export async function deleteBlogTag(id: string) {
+  const s = await getRequiredSession(); requireCapability(s.user.role, "content:write");
+  const count = await prisma.postTag.count({ where: { tagId: id } });
+  if (count > 0) return { ok: false, error: `Tag masih dipakai ${count} artikel. Hapus relasinya dulu.` } as const;
+  await prisma.blogTag.delete({ where: { id } });
+  await logAudit({ actorId: s.user.id, action: "delete", entityType: "BlogTag", entityId: id });
+  return { ok: true } as const;
+}
+
 // --- PAGE SECTIONS (generic) ---
 
 const sectionSchema = z.object({

@@ -22,6 +22,8 @@ import {
   SearchCheck,
   Palette,
   Archive,
+  Tag,
+  FolderTree,
   type LucideIcon,
 } from "lucide-react";
 import type { SessionUser } from "@/lib/auth/session";
@@ -55,6 +57,8 @@ const ICONS: Record<string, LucideIcon> = {
   search: SearchCheck,
   palette: Palette,
   archive: Archive,
+  folderTree: FolderTree,
+  tag: Tag,
 };
 
 export function AdminMobileNav({
