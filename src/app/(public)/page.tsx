@@ -1,7 +1,14 @@
 import { Sparkle } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import { principles } from "@/lib/content";
-import { getPublishedServices, getPublishedFaqs, getPublishedProjects } from "@/lib/public-data";
+import {
+  getPublishedServices,
+  getPublishedFaqs,
+  getPublishedProjects,
+  getPublishedTestimonials,
+  getPublicMetrics,
+} from "@/lib/public-data";
+import { getPublishedArticles } from "@/lib/content-articles";
 import { buildMetadata } from "@/lib/seo";
 import { ToyButton } from "@/components/ui/button";
 import { SectionHeader } from "@/components/public/section-header";
@@ -10,6 +17,8 @@ import { ProjectCard } from "@/components/public/project-card";
 import { ProcessRoad } from "@/components/public/process-road";
 import { FaqAccordion } from "@/components/public/faq-accordion";
 import { BeforeAfter } from "@/components/public/before-after";
+import { TestimonialsSection } from "@/components/public/testimonials-section";
+import { InsightPreview } from "@/components/public/insight-preview";
 import { HeroVisual, ScrollHint } from "@/components/public/hero-visual";
 import { Reveal } from "@/components/motion/reveal";
 
@@ -19,10 +28,13 @@ export const metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [services, homeFaqs, projects] = await Promise.all([
+  const [services, homeFaqs, projects, testimonials, metrics, articles] = await Promise.all([
     getPublishedServices(),
     getPublishedFaqs(),
     getPublishedProjects(),
+    getPublishedTestimonials(),
+    getPublicMetrics(),
+    getPublishedArticles(),
   ]);
   const featured = projects.filter((p) => p.projectType === "CONCEPT" || true).slice(0, 3);
   const hasWork = featured.length > 0;
@@ -203,6 +215,32 @@ export default async function HomePage() {
           ))}
         </div>
       </section>
+
+      {/* ---- Metrics (tampil hanya bila ada data nyata) ---- */}
+      {metrics.length > 0 && (
+        <section className="border-y-2 border-dashed border-ink/10 bg-surface/60 py-14 md:py-16">
+          <div className="mx-auto grid max-w-6xl gap-8 px-5 sm:grid-cols-2 md:grid-cols-4 md:px-10">
+            {metrics.map((m, i) => (
+              <Reveal key={`${m.label}-${i}`} delay={Math.min(i, 3) * 0.05}>
+                <div className="rounded-2xl border-2 border-ink bg-white p-5 shadow-[4px_4px_0_0_var(--ink)]">
+                  <div className="font-display text-3xl font-bold text-ink sm:text-4xl">
+                    {m.value}
+                    {m.unit ? <span className="text-xl text-purple"> {m.unit}</span> : null}
+                  </div>
+                  <div className="mt-2 text-sm font-semibold text-ink/80">{m.label}</div>
+                  {m.sourceNote && <div className="mt-1 text-xs font-medium text-ink/50">{m.sourceNote}</div>}
+                </div>
+              </Reveal>
+            ))}
+          </div>
+        </section>
+      )}
+
+      {/* ---- Testimonials (sembunyi bila kosong) ---- */}
+      <TestimonialsSection items={testimonials} />
+
+      {/* ---- Insight Preview (sembunyi bila kosong) ---- */}
+      <InsightPreview items={articles} />
 
       {/* ---- FAQ ---- */}
       <section className="relative overflow-hidden border-t-2 border-dashed border-ink/10 bg-white/40 py-20 md:py-24">

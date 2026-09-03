@@ -8,6 +8,7 @@ export type ArticleSummary = {
   publishedAt: string;
   categoryName?: string;
   readingMinutes?: number;
+  coverUrl?: string;
 };
 
 export type ArticleBlock = {
@@ -41,6 +42,11 @@ export async function getPublishedArticles(): Promise<ArticleSummary[]> {
       author: { select: { name: true } },
     },
   });
+  const mediaIds = posts.map((p) => p.featuredMediaId).filter(Boolean) as string[];
+  const covers = mediaIds.length
+    ? await prisma.mediaAsset.findMany({ where: { id: { in: mediaIds } } })
+    : [];
+  const coverUrl = new Map(covers.map((c) => [c.id, c.publicUrl]));
   return posts.map((p) => ({
     slug: p.slug,
     title: p.title,
@@ -48,6 +54,7 @@ export async function getPublishedArticles(): Promise<ArticleSummary[]> {
     publishedAt: publishedAt(p.publishedAt, p.scheduledAt).toISOString(),
     categoryName: p.categories[0]?.category.name ?? undefined,
     readingMinutes: p.readingMinutes ?? undefined,
+    coverUrl: p.featuredMediaId ? (coverUrl.get(p.featuredMediaId) ?? undefined) : undefined,
   }));
 }
 

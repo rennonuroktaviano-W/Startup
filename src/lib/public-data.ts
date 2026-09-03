@@ -111,6 +111,58 @@ export async function getPublicClients(): Promise<{ id: string; name: string; we
   }));
 }
 
+export type PublicTestimonial = {
+  id: string;
+  personName: string;
+  jobTitle: string | null;
+  companyName: string | null;
+  quote: string;
+  avatarUrl: string | null;
+};
+
+export async function getPublishedTestimonials(): Promise<PublicTestimonial[]> {
+  const rows = await prisma.testimonial.findMany({
+    where: { status: "PUBLISHED", deletedAt: null, consentStatus: "APPROVED" },
+    orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }],
+  });
+  const mediaIds = rows.map((t) => t.avatarMediaId).filter(Boolean) as string[];
+  const avatars = await prisma.mediaAsset.findMany({ where: { id: { in: mediaIds } } });
+  const avatarUrl = new Map(avatars.map((a) => [a.id, a.publicUrl]));
+  return rows.map((t) => ({
+    id: t.id,
+    personName: t.personName,
+    jobTitle: t.jobTitle,
+    companyName: t.companyName,
+    quote: t.quote,
+    avatarUrl: t.avatarMediaId ? (avatarUrl.get(t.avatarMediaId) ?? null) : null,
+  }));
+}
+
+export type PublicMetric = {
+  label: string;
+  value: string;
+  unit: string | null;
+  sourceNote: string | null;
+};
+
+export async function getPublicMetrics(): Promise<PublicMetric[]> {
+  const rows = await prisma.projectMetric.findMany({
+    where: { project: { status: "PUBLISHED", deletedAt: null } },
+    orderBy: [{ projectId: "asc" }, { sortOrder: "asc" }],
+    select: { label: true, value: true, unit: true, sourceNote: true },
+  });
+  const seen = new Set<string>();
+  const out: PublicMetric[] = [];
+  for (const m of rows) {
+    if (!m.label || !m.value) continue;
+    const signature = `${m.label}|${m.value}|${m.unit ?? ""}`;
+    if (seen.has(signature)) continue;
+    seen.add(signature);
+    out.push({ label: m.label, value: m.value, unit: m.unit, sourceNote: m.sourceNote });
+  }
+  return out.slice(0, 8);
+}
+
 /** Resolve a stored JSON column that may be a string, an already-parsed array, or a JSON-encoded string. */
 function readList(value: unknown): string[] {
   if (Array.isArray(value)) return value.map(String);
