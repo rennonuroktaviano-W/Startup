@@ -1,10 +1,11 @@
 import { NextResponse } from "next/server";
-import { readdir, stat, mkdir, writeFile } from "node:fs/promises";
+import { mkdir, writeFile } from "node:fs/promises";
 import { join, extname } from "node:path";
 import { randomBytes } from "node:crypto";
 import { getSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
 import { logAudit } from "@/lib/audit";
+import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 
@@ -18,19 +19,25 @@ export async function GET(request: Request) {
 
   const { searchParams } = new URL(request.url);
   const q = searchParams.get("q")?.toLowerCase();
-  const files = await readdir(UPLOAD_DIR).catch(() => [] as string[]);
-  const items = await Promise.all(
-    files
-      .filter((f) => !f.startsWith("."))
-      .filter((f) => (q ? f.toLowerCase().includes(q) : true))
-      .slice(0, 200)
-      .map(async (f) => {
-        const s = await stat(join(UPLOAD_DIR, f));
-        return { name: f, size: s.size, modifiedAt: s.mtime.toISOString(), url: `/uploads/${f}` };
-      })
+
+  const assets = await prisma.mediaAsset.findMany({
+    where: q
+      ? { OR: [{ fileName: { contains: q } }, { originalName: { contains: q } }] }
+      : undefined,
+    orderBy: { createdAt: "desc" },
+    take: 200,
+  });
+  return NextResponse.json(
+    assets.map((a) => ({
+      id: a.id,
+      name: a.originalName,
+      url: a.publicUrl ?? `/uploads/${a.fileName}`,
+      size: a.sizeBytes,
+      modifiedAt: a.createdAt.toISOString(),
+      altText: a.altText,
+      caption: a.caption,
+    })),
   );
-  items.sort((a, b) => new Date(b.modifiedAt).getTime() - new Date(a.modifiedAt).getTime());
-  return NextResponse.json(items);
 }
 
 export async function POST(request: Request) {

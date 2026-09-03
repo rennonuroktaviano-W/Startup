@@ -1,10 +1,19 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
-import { LoaderCircle, RefreshCw, FileImage } from "lucide-react";
+import { LoaderCircle, RefreshCw, FileImage, Trash2 } from "lucide-react";
 import { FilePicker, FilePickerValue } from "@/components/admin/cms/file-picker";
+import { deleteMedia } from "@/actions/media";
 
-type MediaItem = { name: string; size: number; modifiedAt: string; url: string };
+type MediaItem = {
+  id: string;
+  name: string;
+  size: number;
+  modifiedAt: string;
+  url: string;
+  altText: string | null;
+  caption: string | null;
+};
 
 function formatBytes(bytes: number) {
   if (bytes < 1024) return `${bytes} B`;
@@ -16,11 +25,14 @@ export function MediaManager() {
   const [items, setItems] = useState<MediaItem[]>([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState("");
+  const [busyId, setBusyId] = useState<string | null>(null);
+  const [error, setError] = useState<string | null>(null);
   const [lastUpload, setLastUpload] = useState<FilePickerValue>(null);
   const ignoreRef = useRef(false);
 
   const fetchItems = async (q?: string) => {
     setLoading(true);
+    setError(null);
     try {
       const res = await fetch(`/api/uploads${q ? `?q=${encodeURIComponent(q)}` : ""}`);
       if (res.ok && !ignoreRef.current) setItems(await res.json());
@@ -34,6 +46,22 @@ export function MediaManager() {
     const id = setTimeout(() => { void fetchItems(); }, 0);
     return () => { ignoreRef.current = true; clearTimeout(id); };
   }, []);
+
+  const handleDelete = async (item: MediaItem) => {
+    if (!window.confirm(`Hapus file "${item.name}"?`)) return;
+    setBusyId(item.id);
+    setError(null);
+    const result = await deleteMedia(item.id);
+    setBusyId(null);
+    if (!result.ok) {
+      const deps = "dependencies" in result && Array.isArray(result.dependencies)
+        ? `\nDipakai oleh: ${(result.dependencies as string[]).join(", ")}.`
+        : "";
+      setError(`${result.error}${deps}`);
+      return;
+    }
+    setItems((prev) => prev.filter((p) => p.id !== item.id));
+  };
 
   return (
     <div className="space-y-5">
@@ -61,6 +89,12 @@ export function MediaManager() {
         </button>
       </div>
 
+      {error && (
+        <p className="whitespace-pre-line rounded-xl border-2 border-coral bg-coral/10 px-4 py-3 text-sm font-semibold text-ink">
+          {error}
+        </p>
+      )}
+
       {loading ? (
         <div className="flex items-center gap-2 py-6 text-sm text-ink/60"><LoaderCircle className="h-4 w-4 animate-spin" /> Memuat…</div>
       ) : items.length === 0 ? (
@@ -68,17 +102,31 @@ export function MediaManager() {
       ) : (
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {items.map((item) => (
-            <div key={item.name} className="group relative overflow-hidden rounded-xl border-2 border-ink bg-surface p-1">
+            <div key={item.id} className="group relative overflow-hidden rounded-xl border-2 border-ink bg-surface p-1">
               <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-ink/5">
                 {item.url.match(/\.(jpg|jpeg|png|gif|webp|svg|avif)$/i) ? (
                   // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.url} alt={item.name} className="h-full w-full object-cover" />
+                  <img src={item.url} alt={item.altText ?? item.name} className="h-full w-full object-cover" />
                 ) : (
                   <FileImage className="h-8 w-8 text-ink/20" />
                 )}
               </div>
-              <p className="truncate px-1 pt-1 text-[11px] font-semibold text-ink/70">{item.name}</p>
+              <button
+                type="button"
+                onClick={() => void handleDelete(item)}
+                disabled={busyId === item.id}
+                className="absolute right-1.5 top-1.5 flex h-7 w-7 items-center justify-center rounded-full border border-ink bg-coral text-white opacity-0 transition-opacity group-hover:opacity-100 disabled:opacity-40"
+                aria-label={`Hapus ${item.name}`}
+              >
+                <Trash2 className="h-3.5 w-3.5" />
+              </button>
+              <p className="truncate px-1 pt-1 text-[11px] font-semibold text-ink/70" title={item.name}>{item.name}</p>
               <p className="px-1 text-[10px] text-ink/40">{formatBytes(item.size)}</p>
+              {(item.altText || item.caption) && (
+                <p className="truncate px-1 pb-1 text-[10px] text-ink/50" title={item.altText ?? item.caption ?? ""}>
+                  {item.altText ?? item.caption}
+                </p>
+              )}
             </div>
           ))}
         </div>
