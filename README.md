@@ -1,451 +1,870 @@
 <div align="center">
 
-🧩✨ [NAMA STARTUP]
+# 🚀 [NAMA STARTUP]
 
-Creative Toybox × Digital Product Studio
+### `Creative Digital Studio • Website • Web App • UI • CMS`
 
-Full-stack company profile + Custom CMS + Mini CRM
-Playful di luar. Serius di dalam. Dibangun untuk mengubah visitor menjadi project lead. 🚀
+<br>
 
-<p>
-  <img src="https://img.shields.io/badge/Next.js-App_Router-000000?style=for-the-badge&logo=nextdotjs&logoColor=white" alt="Next.js" />
-  <img src="https://img.shields.io/badge/React-UI-20232A?style=for-the-badge&logo=react&logoColor=61DAFB" alt="React" />
-  <img src="https://img.shields.io/badge/TypeScript-Strict-3178C6?style=for-the-badge&logo=typescript&logoColor=white" alt="TypeScript" />
-  <img src="https://img.shields.io/badge/Tailwind_CSS-Styling-06B6D4?style=for-the-badge&logo=tailwindcss&logoColor=white" alt="Tailwind CSS" />
-</p>
+```txt
+┌───────────────────────────────────────────────────────────────┐
+│                                                               │
+│   💡  IDEA  ──────▶  🎨  DESIGN  ──────▶  💻  CODE           │
+│                                      │                        │
+│                                      ▼                        │
+│                              🚀 DIGITAL PRODUCT               │
+│                                                               │
+└───────────────────────────────────────────────────────────────┘
+```
 
-<p>
-  <img src="https://img.shields.io/badge/Prisma-ORM-2D3748?style=for-the-badge&logo=prisma&logoColor=white" alt="Prisma" />
-  <img src="https://img.shields.io/badge/MySQL-Database-4479A1?style=for-the-badge&logo=mysql&logoColor=white" alt="MySQL" />
-  <img src="https://img.shields.io/badge/CMS-Custom-7357FF?style=for-the-badge" alt="Custom CMS" />
-  <img src="https://img.shields.io/badge/Mobile-First-66E2A6?style=for-the-badge" alt="Mobile First" />
-</p>
+### ✨ From small ideas to digital products that feel alive.
 
-╭────────────────────────────────────────────────────╮
-│   idea.exe → design.tsx → build() → launch 🚀     │
-╰────────────────────────────────────────────────────╯
+Website company profile sekaligus platform untuk menerima,
+mengelola, dan mengembangkan project digital dari calon client.
 
-< DESIGN /> + { CODE } + [ BUSINESS ]
+<br>
+
+![Next.js](https://img.shields.io/badge/Next.js-000000?style=for-the-badge\&logo=nextdotjs\&logoColor=white)
+![React](https://img.shields.io/badge/React-20232A?style=for-the-badge\&logo=react\&logoColor=61DAFB)
+![TypeScript](https://img.shields.io/badge/TypeScript-3178C6?style=for-the-badge\&logo=typescript\&logoColor=white)
+![TailwindCSS](https://img.shields.io/badge/TailwindCSS-06B6D4?style=for-the-badge\&logo=tailwindcss\&logoColor=white)
+![Prisma](https://img.shields.io/badge/Prisma-2D3748?style=for-the-badge\&logo=prisma\&logoColor=white)
+![MySQL](https://img.shields.io/badge/MySQL-4479A1?style=for-the-badge\&logo=mysql\&logoColor=white)
+
+<br>
+
+`FUN` • `PLAYFUL` • `RESPONSIVE` • `FULL-STACK` • `CMS` • `SECURE`
 
 </div>
 
-🎮 What Is This Project?
-
-[NAMA STARTUP] adalah website company profile sekaligus lead-generation platform untuk startup/studio digital yang menawarkan jasa pembuatan website dan aplikasi.
-
-Project ini bukan landing page statis. Sistemnya dirancang full-stack dengan website publik, database, authentication, custom Admin CMS, publishing workflow, media management, dan mini CRM untuk menangani calon klien.
-
-🛠️ Layanan yang dapat ditampilkan
-
-🌐 Company Profile Website
-
-🎯 Landing Page
-
-🛍️ Website Bisnis & Katalog
-
-⚙️ Web Application
-
-📊 Dashboard & Admin CMS
-
-🧩 Sistem Internal
-
-🎨 UI Implementation / Redesign
-
-🔧 Maintenance & Optimization
-
-🌈 Design DNA
-
-Creative Toybox Meets Digital Product Studio
-
-PLAYFUL  ████████████████████████████░░░░  70%
-PRO      ████████████░░░░░░░░░░░░░░░░░░░  30%
-
-Visual direction:
-
-🧸 Fun, colorful, playful, tetapi tetap profesional.
-
-🪄 Handcrafted shapes, browser cards, UI tiles, stickers, cursor characters.
-
-🪟 Floating glass navigation — tanpa navbar full-width tradisional.
-
-🫧 Floating project CTA.
-
-🕹️ Purposeful motion & micro-interactions.
-
-🧊 Progressive 3D enhancement dengan fallback ringan.
-
-📱 Mobile-first.
-
-♿ Accessible dan reduced-motion friendly.
-
-🎨 Base Color Tokens
-
-Token
-
-Color
-
-Usage
-
-Ink
-
-#17132B
-
-Main text / outline
-
-Paper
-
-#FFF9F3
-
-Main background
-
-Purple Pop
-
-#7357FF
-
-CTA / primary accent
-
-Lemon
-
-#FFD84D
-
-Highlight
-
-Coral
-
-#FF6B72
-
-Warm accent
-
-Sky
-
-#62D8FF
-
-Technology accent
-
-Mint
-
-#66E2A6
-
-Positive state
-
-🧠 Project Philosophy
-
-const studio = {
-  fakeData: false,
-  deadButtons: false,
-  loremIpsum: false,
-  aiSlop: false,
-  mobileAsAfterthought: false,
-
-  accessibility: true,
-  performance: true,
-  realDatabase: true,
-  secureCMS: true,
-  fun: "MAXIMUM_WITH_PURPOSE",
-};
-
-Setiap animasi dan dekorasi harus membantu storytelling, navigation, feedback, atau menunjukkan kemampuan teknis.
-
-🚀 Main Features
-
-<table>
-<tr>
-<td width="50%" valign="top">
-
-🌍 Public Website
-
-Home
-
-Services
-
-Service Detail
-
-Work / Portfolio
-
-Case Study
-
-About
-
-Process
-
-Insights / Blog
-
-Article Detail
-
-Project Brief
-
-Privacy & Terms
-
-Custom 404
-
-SEO / Sitemap / Robots
-
-</td>
-<td width="50%" valign="top">
-
-🧠 Admin System
-
-Secure Login
-
-Dashboard
-
-Page & Section Builder
-
-Services Manager
-
-Portfolio Manager
-
-Blog Manager
-
-FAQ Manager
-
-Media Library
-
-Inquiry Mini CRM
-
-SEO Manager
-
-Theme Controls
-
-Users & Roles
-
-Audit Logs
-
-</td>
-</tr>
-</table>
-
-🪐 Public Experience
-
+---
+
+# 🧸 What Is This Project?
+
+**[NAMA STARTUP]** adalah website company profile untuk sebuah **digital studio / startup jasa pembuatan website dan application**.
+
+Project ini bukan hanya landing page atau website company profile statis.
+
+Di balik website publik terdapat sebuah sistem full-stack yang memiliki:
+
+* 🌐 Public company profile
+* 🎨 Interactive & playful UI
+* 🧩 Custom Admin CMS
+* 📂 Portfolio / Case Study Manager
+* 📝 Blog / Insight Management
+* 📬 Project Brief System
+* 👥 Lead Management
+* 📊 Mini CRM
+* 🔐 Admin Authentication
+* 🛡️ Role Based Access Control
+* 🖼️ Media Library
+* 🔍 SEO Management
+* 🕒 Draft / Preview / Publish System
+* 📜 Revision History
+* 🧾 Audit Logs
+* ⚙️ Website Settings
+* 🎨 Theme & Motion Controls
+
+Singkatnya:
+
+```txt
 Visitor
    │
-   ├──► Understand the studio
-   ├──► Explore services
-   ├──► View selected work
-   ├──► Learn the process
-   └──► Start a project 🚀
+   ▼
+🌐 Public Website
+   │
+   ├── Services
+   ├── Portfolio
+   ├── About
+   ├── Process
+   ├── Insights
+   └── Project Brief
+           │
+           ▼
+       📥 Inquiry
+           │
+           ▼
+      🧠 Mini CRM
+           │
+           ▼
+       🛠 Admin CMS
+```
 
-Home dapat memiliki:
+---
 
-🎪 Toy Website Factory hero
+# 🎯 Project Mission
 
-🧩 Service Playground
+Tujuan utama project ini adalah membuat website digital studio yang:
 
-🔀 Before / After browser
+```js
+const mission = {
+  look: "fun & memorable",
+  experience: "smooth & interactive",
+  system: "full-stack",
+  content: "CMS managed",
+  mobile: "first class citizen",
+  security: "not optional",
+  fakeData: false,
+};
+```
 
-🖼️ Selected Work
+Website harus dapat membuat visitor memahami:
 
-🛤️ Interactive Process
+```txt
+01. Siapa kami?
+02. Apa yang kami kerjakan?
+03. Apa yang bisa kami buat?
+04. Bagaimana proses kami bekerja?
+05. Bagaimana cara memulai project?
+```
 
-💡 Principles
+tanpa harus membaca website selama 10 menit.
 
-📝 Insights preview
+---
 
+# 🎨 Design Philosophy
+
+## Creative Toybox × Digital Product Studio
+
+Visual website dibuat dengan pendekatan:
+
+```txt
+70% PLAYFUL
+30% PROFESSIONAL
+```
+
+Bayangkan sebuah **digital playground** tempat browser window, cursor, component, code, warna, card, dan UI element menjadi bagian dari dunia visual website.
+
+### ✦ Visual Direction
+
+* 🟣 Colorful
+* 🧸 Playful
+* ✏️ Handcrafted feeling
+* 🧩 UI component inspired decoration
+* 🪄 Micro interaction
+* 🎮 Interactive element
+* 🌀 Controlled animation
+* 🧱 Toy-like digital objects
+* 💻 Programmer / technology personality
+
+Tetapi tetap:
+
+* mudah dibaca
+* cepat
+* responsive
+* accessible
+* tidak mengganggu user
+
+---
+
+# 🚫 Anti AI-Slop Zone
+
+Project ini **tidak dibuat untuk terlihat seperti template AI generik**.
+
+Tidak ada:
+
+```diff
+- Random gradient blob di mana-mana
+- "Innovate. Transform. Grow."
+- "Revolutionizing the digital landscape"
+- Bento grid tanpa alasan
+- Glassmorphism pada semua card
+- Sparkle berlebihan ✨✨✨✨✨
+- Statistik palsu
+- Testimonial palsu
+- Client palsu
+- Portfolio palsu
+- Marquee random
+- Animasi fade-up copy-paste di semua section
+```
+
+Sebaliknya:
+
+```diff
++ Visual punya tujuan
++ Animasi memberikan feedback
++ Layout punya hierarchy
++ Decoration berhubungan dengan dunia digital
++ Data yang ditampilkan harus nyata
+```
+
+---
+
+# 🛠️ Tech Stack
+
+```ts
+const techStack = {
+  framework: "Next.js App Router",
+  frontend: [
+    "React",
+    "TypeScript",
+    "Tailwind CSS"
+  ],
+  backend: [
+    "Next.js Server Actions",
+    "Route Handlers"
+  ],
+  database: "MySQL",
+  orm: "Prisma ORM",
+  authentication: "Session Based Authentication",
+  architecture: "Full Stack",
+};
+```
+
+### Core Technologies
+
+| Technology       | Purpose                 |
+| ---------------- | ----------------------- |
+| ⚫ Next.js        | Full-stack framework    |
+| ⚛️ React         | Interactive UI          |
+| 🔷 TypeScript    | Type safety             |
+| 🌊 Tailwind CSS  | Styling system          |
+| 🔺 Prisma ORM    | Database access         |
+| 🐬 MySQL         | Main database           |
+| 🔐 Session Auth  | Admin authentication    |
+| 🎨 Motion System | Animation & interaction |
+
+---
+
+# 🗺️ Public Pages
+
+```txt
+/
+│
+├── 🏠 Home
+│
+├── 🧩 Services
+│   └── /services/[slug]
+│
+├── 🎨 Work
+│   └── /work/[slug]
+│
+├── 👋 About
+│
+├── 🛠 Process
+│
+├── 📝 Insights
+│   └── /insights/[slug]
+│
+├── 💬 Contact / Project Brief
+│
+├── 🔐 Privacy
+│
+└── 📜 Terms
+```
+
+Tidak menggunakan navbar dan footer tradisional.
+
+Sebagai gantinya digunakan sistem navigasi seperti:
+
+### Desktop
+
+```txt
+╭──────────────╮                      ╭────╮
+│ 🚀 BRAND     │                      │ ☰  │
+╰──────────────╯                      ╰────╯
+
+
+                 WEBSITE CONTENT
+
+
+                                     ╭──────────────╮
+                                     │ Start Project│
+                                     ╰──────────────╯
+```
+
+### Mobile
+
+```txt
+╭────────────────────────────────────╮
+│ 🏠 Home  🧩 Service  🎨 Work  ••• │
+╰────────────────────────────────────╯
+```
+
+Floating glass navigation digunakan sebagai identitas utama website.
+
+---
+
+# 🏠 Home Experience
+
+Homepage bukan kumpulan section biasa.
+
+Homepage dirancang seperti sebuah perjalanan.
+
+```txt
+START
+  │
+  ▼
+🚀 HERO
+  │
+  ▼
+🧩 SERVICES PLAYGROUND
+  │
+  ▼
+🧹 MESSY → CLEAN PRODUCT
+  │
+  ▼
+🎨 SELECTED WORK
+  │
+  ▼
+🛤 DEVELOPMENT PROCESS
+  │
+  ▼
+🧠 PRINCIPLES
+  │
+  ▼
+📝 INSIGHTS
+  │
+  ▼
 ❓ FAQ
+  │
+  ▼
+🎉 CLOSING PLAYGROUND
+```
 
-🎯 Closing Playground CTA
+---
 
-🧊 Navigation System
+# 🪐 Hero — Toy Website Factory
 
-Website publik tidak memakai navbar/footer tradisional.
+Hero memiliki konsep:
 
-Desktop
-┌──────────────────────────────────────────────┐
-│ ◉ Brand Pebble                  Menu Orb ◉  │
-│                                              │
-│               PAGE CONTENT                   │
-│                                              │
-│                              Start Project ● │
-└──────────────────────────────────────────────┘
+## `Toy Website Factory`
 
-Mobile memakai floating bottom glass dock:
+Browser window menjadi objek utama.
 
-Home · Services · Work · Contact · More
+Di sekitarnya terdapat:
 
-🎞️ Motion & 3D
+```txt
+       🎨
+        \
+ 🖱️ ── 🖥️ ── 🧩
+        /
+      📱
+```
 
-CSS / React motion sebagai dasar.
+Contoh objek:
 
-3D hanya progressive enhancement.
+* browser window
+* cursor
+* UI card
+* color swatch
+* button
+* mobile device
+* layout grid
+* component block
 
-Mobile mendapat versi lebih ringan.
+Pada perangkat yang mendukung, hero dapat menggunakan progressive 3D.
 
-Reduced-motion mendapat fallback minimal/static.
+Jika device tidak kuat:
 
-Tidak ada artificial loading delay.
+```txt
+3D
+ │
+ ├── capable device → interactive scene
+ │
+ ├── mobile → simplified animation
+ │
+ ├── low performance → CSS/SVG
+ │
+ └── reduced motion → static visual
+```
 
-Route transition singkat dan tidak menghambat user.
+Performance tetap lebih penting daripada efek.
 
-Jika WebGL terlalu berat, fallback ke SVG/CSS.
+---
 
-📬 Project Brief Flow
+# 🧩 Services
 
-[ 01 ABOUT YOU ]
-       ↓
-[ 02 PROJECT ]
-       ↓
-[ 03 SCOPE ]
-       ↓
-[ 04 BUDGET + CONFIRM ]
-       ↓
-   ✅ INQUIRY CREATED
+Digital studio dapat menawarkan layanan seperti:
 
-Form mendukung:
+```txt
+🌐 Company Profile Website
+🚀 Landing Page
+🛒 Business Website
+💻 Web Application
+📊 Dashboard
+🧠 Admin CMS
+🎨 UI Implementation
+🪄 Website Redesign
+🔧 Maintenance
+⚡ Optimization
+```
 
-Progress indicator
+Setiap service dapat memiliki:
 
-Per-step validation
+* description
+* target client
+* problems solved
+* deliverables
+* timeline
+* starting price
+* FAQ
+* related projects
+* SEO configuration
 
-Server-side validation
+Semua dikelola melalui CMS.
 
-Attachment
+---
 
-Target deadline
+# 🎨 Portfolio & Case Studies
 
-Budget range
+Portfolio memiliki dua tipe project:
 
-Privacy consent
+```ts
+type ProjectType =
+  | "CLIENT"
+  | "CONCEPT";
+```
 
-Double-submit protection
+Project concept **tidak boleh disamarkan menjadi client project**.
 
-Anti-spam / rate limiting
+Setiap case study dapat menampilkan:
 
-Inquiry reference number
+```txt
+📌 Project Information
+🎯 Goals
+⚠️ Challenge
+🧠 Approach
+🎨 Design Highlight
+💻 Development Highlight
+🖼️ Gallery
+📊 Real Metrics
+💬 Testimonial
+🚀 Outcome
+```
 
-Admin notification
+---
 
-Client acknowledgment email
+# 📬 Project Brief System
 
-🗂️ Custom Admin CMS
+Calon client dapat mengirim kebutuhan project melalui form multi-step.
 
+```txt
+STEP 01
+👤 About You
+
+        ↓
+
+STEP 02
+💻 Your Project
+
+        ↓
+
+STEP 03
+🧩 Project Scope
+
+        ↓
+
+STEP 04
+💰 Budget & Confirmation
+
+        ↓
+
+      🚀 SUBMIT
+```
+
+Informasi yang dikumpulkan dapat meliputi:
+
+* nama
+* bisnis / organisasi
+* email
+* WhatsApp
+* preferred contact
+* layanan
+* tujuan project
+* deskripsi
+* fitur
+* deadline
+* budget
+* attachment
+* reference URL
+
+Setelah submit:
+
+```txt
+Visitor
+   │
+   ▼
+Project Brief
+   │
+   ▼
+Validation
+   │
+   ▼
+Database
+   │
+   ├────▶ 📧 Notification
+   │
+   └────▶ 🧠 Mini CRM
+```
+
+---
+
+# 🧠 Mini CRM
+
+Inquiry dari calon client tidak berhenti di inbox.
+
+Semua lead masuk ke mini CRM.
+
+Pipeline:
+
+```txt
+🆕 NEW
+  │
+  ▼
+📞 CONTACTED
+  │
+  ▼
+🎯 QUALIFIED
+  │
+  ▼
+📄 PROPOSAL SENT
+  │
+  ├───────────────┐
+  ▼               ▼
+🎉 WON           ❌ LOST
+```
+
+Tersedia juga status:
+
+```txt
+🚫 SPAM
+```
+
+CRM memiliki kemampuan seperti:
+
+* search
+* advanced filter
+* assignment
+* notes
+* activity timeline
+* unread/read
+* status pipeline
+* lost reason
+* CSV export
+* WhatsApp action
+* email action
+* attachment management
+* soft delete
+* restore
+
+---
+
+# 🛠️ Admin CMS
+
+Project memiliki custom CMS sendiri.
+
+```txt
 /admin
-├── dashboard
-├── pages
-├── services
-├── projects
-├── testimonials
-├── clients
-├── team
-├── blog
-├── faqs
-├── leads
-├── media
-├── navigation
-├── seo
-├── theme
-├── settings
-├── users
-├── audit-logs
-└── backups
+│
+├── 📊 Dashboard
+├── 📄 Pages
+├── 🧩 Services
+├── 🎨 Projects
+├── 💬 Testimonials
+├── 🏢 Clients
+├── 👥 Team
+├── 📝 Blog
+├── ❓ FAQ
+├── 📥 Leads
+├── 🖼 Media
+├── 🧭 Navigation
+├── 🔍 SEO
+├── 🎨 Theme
+├── ⚙️ Settings
+├── 👤 Users
+├── 📜 Audit Logs
+└── 💾 Backups
+```
 
-Konten utama dirancang agar dapat dikelola dari CMS tanpa harus membuka source code.
+CMS dibuat lebih fokus pada produktivitas.
 
-📈 Mini CRM
+Public website:
 
-NEW
- │
- ▼
-CONTACTED
- │
- ▼
-QUALIFIED
- │
- ▼
-PROPOSAL_SENT
- │
- ├────► WON 🎉
- └────► LOST
+```txt
+🎨 PLAYFUL
+```
 
-SPAM → separated safely
+Admin CMS:
 
-CRM dapat menangani:
+```txt
+⚙️ PRACTICAL
+```
 
-Table & Kanban view
+---
 
-Search & filters
+# 📊 Admin Dashboard
 
-Assignee
+Dashboard dapat menampilkan informasi seperti:
 
-Internal notes
+```txt
+┌──────────────────┐
+│ 📬 NEW INQUIRY   │
+│       12         │
+└──────────────────┘
 
-Activity timeline
+┌──────────────────┐
+│ 🎯 QUALIFIED     │
+│        4         │
+└──────────────────┘
 
-Read / unread status
+┌──────────────────┐
+│ 🎨 PROJECTS      │
+│        8         │
+└──────────────────┘
 
-WhatsApp / Email action
+┌──────────────────┐
+│ 📝 DRAFT CONTENT │
+│        6         │
+└──────────────────┘
+```
 
-Attachment access
+Data tidak boleh dibuat palsu hanya agar dashboard terlihat penuh.
 
-CSV export
+---
 
-Bulk status update
+# 👥 Roles & Permissions
 
-Lost reason
+Sistem menggunakan RBAC.
 
-Soft delete & restore
+```txt
+👑 SUPER ADMIN
+│
+├── Full CMS Access
+├── User Management
+├── Settings
+├── SEO
+├── Leads
+├── Audit Logs
+└── Backup
 
-✍️ Publishing Workflow
+✍️ CONTENT EDITOR
+│
+├── Pages
+├── Projects
+├── Services
+├── Blog
+├── FAQ
+└── Media
 
-DRAFT → REVIEW → SCHEDULED → PUBLISHED → ARCHIVED
+💼 SALES
+│
+├── Leads
+├── Inquiry
+├── Notes
+└── Client Communication
+```
 
-Mendukung:
+Permission tidak hanya disembunyikan dari UI.
 
-Draft
+Permission wajib diperiksa pada server.
 
-Secure preview token
+---
 
-Scheduled publishing
+# 📝 Publishing Workflow
 
-Revision history
+Konten memiliki lifecycle:
 
-Restore revision
+```txt
+DRAFT
+  │
+  ▼
+REVIEW
+  │
+  ├─────────────┐
+  ▼             │
+SCHEDULED       │
+  │             │
+  ▼             │
+PUBLISHED ◀─────┘
+  │
+  ▼
+ARCHIVED
+```
 
-Audit logging
+CMS mendukung:
 
-Route revalidation
+* draft
+* preview
+* review
+* publish
+* scheduled publish
+* archive
+* revision history
+* restore revision
 
-Redirect ketika published slug berubah
+---
 
-🧰 Tech Stack
+# 🖼 Media Library
 
-Frontend
-├── Next.js App Router
-├── React
-├── TypeScript
-└── Tailwind CSS
+CMS menyediakan media manager.
 
-Backend
-├── Server Components
-├── Server Actions / Server Functions
-└── Route Handlers
+Fitur:
 
-Data
-├── MySQL
-└── Prisma ORM
+```txt
+📤 Upload
+🔎 Search
+🖼 Grid View
+📋 List View
+🏷 Alt Text
+✏️ Caption
+👤 Credit
+📐 Dimension
+💾 File Size
+🔗 Dependency Check
+♻️ Replace Asset
+🗑 Safe Delete
+```
 
-Platform
-├── Session Authentication
-├── Server-side RBAC
-├── Custom CMS
-├── Media Storage Adapter
-├── Email Adapter
-├── Analytics Adapter
-└── Scheduled Publishing
+File yang masih digunakan oleh halaman atau project tidak dapat dihapus sembarangan.
 
-🏗️ Architecture
+---
 
-flowchart TD
-    V[👤 Visitor] --> P[🌍 Next.js Public Site]
-    A[🧑‍💻 Admin] --> C[🧠 Admin CMS]
-    P --> S[⚙️ Server Actions & Route Handlers]
-    C --> S
-    S --> D[(🗄️ MySQL)]
-    S --> X[☁️ Storage / Email]
+# 🔍 SEO System
 
-📁 Project Structure
+SEO tidak hard-coded.
 
+Admin dapat mengatur:
+
+```txt
+Title
+Description
+Canonical URL
+Open Graph
+Index / NoIndex
+Structured Data
+Redirect
+Sitemap
+Social Preview
+```
+
+Project juga mendukung:
+
+```txt
+/sitemap.xml
+/robots.txt
+```
+
+---
+
+# 🔐 Security
+
+Security merupakan bagian dari arsitektur.
+
+```txt
+🔐 Secure Session
+🍪 HttpOnly Cookie
+🛡 Server-side Authorization
+⚡ Rate Limiting
+🧪 Server Validation
+🧹 HTML Sanitization
+📁 Upload Validation
+🚫 Open Redirect Protection
+🔒 Private Attachment
+📜 Audit Logging
+🛡 Security Headers
+```
+
+Password:
+
+```txt
+NEVER
+↓↓↓↓↓
+
+❌ Stored as plaintext
+❌ Hard-coded
+❌ Committed to Git
+❌ Displayed inside README
+```
+
+---
+
+# ♿ Accessibility
+
+Target:
+
+```txt
+WCAG 2.2 AA
+```
+
+Website memperhatikan:
+
+* keyboard navigation
+* visible focus state
+* semantic HTML
+* form labels
+* aria attributes
+* minimum touch target
+* accessible dialog
+* ESC navigation
+* reduced motion
+* image alt text
+* sufficient contrast
+
+---
+
+# 📱 Responsive Everywhere
+
+Target device:
+
+```txt
+320px
+  │
+  ├── Small Mobile
+  ├── Mobile
+  ├── Large Mobile
+  ├── Tablet
+  ├── Laptop
+  ├── Desktop
+  └── Ultra Wide
+```
+
+Mobile bukan versi desktop yang diperkecil.
+
+```js
+const responsiveMindset = "mobile-first";
+```
+
+---
+
+# ⚡ Performance Philosophy
+
+Rule:
+
+> Cool animation is optional. Good performance is mandatory.
+
+Optimasi yang digunakan:
+
+```txt
+⚡ Server Components
+⚡ Dynamic Import
+⚡ Lazy Loading
+⚡ Responsive Images
+⚡ Font Optimization
+⚡ Animation via transform
+⚡ Reduced JS Bundle
+⚡ Pause off-screen animations
+⚡ Progressive 3D
+⚡ Static fallback
+```
+
+Jika 3D membuat website lambat:
+
+```txt
+DELETE 3D
+
+KEEP EXPERIENCE
+```
+
+---
+
+# 📁 Project Structure
+
+```txt
 src/
+│
 ├── app/
+│   │
 │   ├── (public)/
 │   │   ├── services/
 │   │   ├── work/
@@ -453,19 +872,49 @@ src/
 │   │   ├── process/
 │   │   ├── insights/
 │   │   └── contact/
+│   │
 │   ├── admin/
 │   │   ├── login/
 │   │   └── (protected)/
+│   │       ├── dashboard/
+│   │       ├── pages/
+│   │       ├── services/
+│   │       ├── projects/
+│   │       ├── blog/
+│   │       ├── leads/
+│   │       ├── media/
+│   │       └── settings/
+│   │
 │   └── api/
+│
 ├── actions/
+│
 ├── components/
 │   ├── public/
 │   ├── admin/
 │   ├── ui/
 │   ├── motion/
 │   └── forms/
+│
 ├── features/
+│   ├── auth/
+│   ├── cms/
+│   ├── inquiries/
+│   ├── media/
+│   ├── publishing/
+│   └── seo/
+│
 ├── lib/
+│   ├── auth/
+│   ├── db/
+│   ├── validation/
+│   ├── permissions/
+│   ├── rate-limit/
+│   ├── mail/
+│   ├── storage/
+│   ├── analytics/
+│   └── seo/
+│
 ├── styles/
 └── types/
 
@@ -483,53 +932,86 @@ tests/
 ├── unit/
 ├── integration/
 └── e2e/
+```
 
-⚡ Getting Started
+---
 
-Sesuaikan command dengan scripts final yang tersedia di package.json.
+# 🧬 System Architecture
 
-1. Clone
+```mermaid
+flowchart TD
 
+Visitor["👤 Visitor"]
+Admin["🧑‍💻 Admin"]
+
+Public["🌐 Next.js Public Website"]
+CMS["🛠 Admin CMS"]
+
+Server["⚙️ Server Actions / Route Handlers"]
+
+DB[("🐬 MySQL")]
+Storage["📦 Object Storage"]
+Mail["📧 Email Service"]
+
+Visitor --> Public
+Admin --> CMS
+
+Public --> Server
+CMS --> Server
+
+Server --> DB
+Server --> Storage
+Server --> Mail
+```
+
+---
+
+# ⚙️ Getting Started
+
+## 1. Clone Repository
+
+```bash
 git clone <YOUR_REPOSITORY_URL>
-cd <YOUR_PROJECT_FOLDER>
+```
 
-2. Install
+Masuk ke project:
 
+```bash
+cd <PROJECT_FOLDER>
+```
+
+---
+
+## 2. Install Dependencies
+
+```bash
 npm install
+```
 
-3. Environment
+---
 
-Windows PowerShell:
+## 3. Setup Environment
 
-Copy-Item .env.example .env
+Copy:
 
-macOS / Linux:
+```txt
+.env.example
+```
 
-cp .env.example .env
+menjadi:
 
-4. Prisma + Database
+```txt
+.env
+```
 
-npx prisma generate
-npx prisma migrate dev
+Contoh environment yang dibutuhkan:
 
-Jika seed tersedia:
-
-npx prisma db seed
-
-5. Run Development Server
-
-npm run dev
-
-http://localhost:3000
-
-🔑 Environment Variables
-
-.env.example wajib tersedia tanpa secret.
-
+```env
 DATABASE_URL=
 
 AUTH_SECRET=
 AUTH_URL=
+
 NEXT_PUBLIC_SITE_URL=
 
 INITIAL_ADMIN_EMAIL=
@@ -549,470 +1031,261 @@ STORAGE_SECRET_KEY=
 ANALYTICS_PROVIDER=
 ANALYTICS_ID=
 
-CAPTCHA_SITE_KEY=
-CAPTCHA_SECRET_KEY=
-
 CRON_SECRET=
+```
 
-⚠️ Jangan commit .env, password, access key, token, atau secret lain ke repository.
+> ⚠️ Jangan pernah commit `.env` ke repository.
 
-🔐 Security
+---
 
-🔒 Session-based authentication
+# 🐬 Database Setup
 
-🍪 HttpOnly / Secure cookie di production
+Generate Prisma Client:
 
-🧂 Strong password hashing
+```bash
+npx prisma generate
+```
 
-🚦 Login rate limit
+Jalankan migration:
 
-🛂 Server-side RBAC
+```bash
+npx prisma migrate dev
+```
 
-🧼 Server-side input validation
+Seed database:
 
-🗃️ Prisma parameterized database access
+```bash
+npx prisma db seed
+```
 
-📎 Private inquiry attachment
+Optional database viewer:
 
-🔗 Short-lived signed download URL
+```bash
+npx prisma studio
+```
 
-🧱 Content Security Policy
+---
 
-🔐 HTTPS + HSTS production
+# ▶️ Run Development Server
 
-🧾 Audit log
+```bash
+npm run dev
+```
 
-🚫 No secrets in source control
+Buka:
 
-👥 Roles
+```txt
+http://localhost:3000
+```
 
-Capability
+---
 
-Super Admin
+# 🧪 Testing
 
-Content Editor
+Lint:
 
-Sales
-
-Dashboard
-
-✅
-
-✅
-
-✅
-
-Manage Content
-
-✅
-
-✅
-
-👁️
-
-Publish
-
-✅
-
-🔐
-
-❌
-
-Blog / FAQ
-
-✅
-
-✅
-
-❌
-
-Manage Leads
-
-✅
-
-Limited
-
-✅
-
-Export Leads
-
-✅
-
-❌
-
-🔐
-
-Settings / SEO
-
-✅
-
-Limited
-
-❌
-
-Users / Roles
-
-✅
-
-❌
-
-❌
-
-Audit Logs
-
-✅
-
-❌
-
-❌
-
-🧪 Quality Check
-
-Sebelum deploy:
-
+```bash
 npm run lint
+```
+
+Testing:
+
+```bash
 npm run test
+```
+
+Production build:
+
+```bash
 npm run build
+```
 
-QA minimum:
+Run production:
 
-✅ Chrome / Firefox / Edge / Safari-WebKit
+```bash
+npm start
+```
 
-✅ Keyboard navigation
+---
 
-✅ Reduced motion
+# ✅ Definition of Done
 
-✅ Zoom 200%
+Project baru dianggap selesai ketika:
 
-✅ Mobile 320px+
+```txt
+[✓] Public pages bekerja
+[✓] Navigation bekerja
+[✓] Responsive semua device
+[✓] Tidak ada horizontal overflow
 
-✅ Tablet portrait / landscape
+[✓] Authentication bekerja
+[✓] Authorization bekerja
+[✓] CMS terhubung database
 
-✅ Desktop 1366×768+
+[✓] Services CRUD
+[✓] Project CRUD
+[✓] Blog CRUD
+[✓] FAQ CRUD
+[✓] Media Library
+[✓] SEO Manager
 
-✅ Large desktop
+[✓] Inquiry masuk database
+[✓] Mini CRM bekerja
+[✓] Notes bekerja
+[✓] Pipeline bekerja
 
-✅ Slow network
+[✓] Draft bekerja
+[✓] Preview bekerja
+[✓] Publish bekerja
 
-✅ Empty state
+[✓] Reduced Motion
+[✓] Keyboard Navigation
 
-✅ Error state
+[✓] Migration berhasil
+[✓] Seed berhasil
 
-♿ Accessibility
+[✓] npm run lint
+[✓] npm run test
+[✓] npm run build
 
-Target: WCAG 2.2 AA
+[✓] No critical console error
+[✓] No hard-coded secret
+[✓] No fake business data
+```
 
-Semantic HTML
+---
 
-Skip link
+# 🛣️ Development Roadmap
 
-Visible focus state
+```txt
+PHASE 00
+██████████ Setup & Audit
 
-Keyboard navigation
+PHASE 01
+██████████ Design System
 
-Focus trap untuk dialog/menu
+PHASE 02
+██████████ Public Website
 
-ESC close behavior
+PHASE 03
+██████████ Database & Authentication
 
-Minimum 44px touch target
+PHASE 04
+██████████ Admin CMS
 
-Accessible form labels
+PHASE 05
+██████████ Inquiry & Mini CRM
 
-aria-describedby untuk error
+PHASE 06
+██████████ Motion & 3D
 
-aria-live untuk feedback
+PHASE 07
+██████████ SEO & Security
 
-Meaningful alt text
+PHASE 08
+██████████ Testing & Deployment
+```
 
-Reduced-motion support
+---
 
-Sufficient color contrast
+# 🧠 Developer Principles
 
-📱 Responsive Targets
+```js
+while (buildingProject) {
 
-Width
+  keepItResponsive();
 
-Target
+  protectUserData();
 
-320–359px
+  avoidFakeData();
 
-Very small mobile
+  buildReusableComponents();
 
-360–479px
+  validateOnServer();
 
-Common mobile
+  respectAccessibility();
 
-480–767px
+  optimizePerformance();
 
-Large mobile
+  if (animation.isCool && animation.isSlow) {
+    animation.remove();
+  }
 
-768–1023px
-
-Tablet
-
-1024–1439px
-
-Laptop
-
-1440–1919px
-
-Desktop
-
-1920px+
-
-Wide desktop
-
-No accidental horizontal overflow. Ever.
-
-⚡ Performance
-
-Server Components first
-        ↓
-Minimal Client JavaScript
-        ↓
-Dynamic Import Heavy Features
-        ↓
-Lazy-load Media
-        ↓
-Pause Invisible Animations
-        ↓
-Static 3D Fallback
-        ↓
-FAST EXPERIENCE ⚡
-
-Target awal:
-
-LCP ≤ 2.5s
-
-CLS ≤ 0.1
-
-INP ≤ 200ms
-
-🔎 SEO
-
-Dynamic metadata
-
-Canonical URL
-
-Open Graph
-
-Sitemap
-
-Robots
-
-Structured data
-
-Clean slug
-
-301 redirects
-
-Per-page SEO override
-
-Alt text management
-
-CMS SEO preview
-
-🚢 Deployment
-
-Target production:
-
-Next.js-compatible Node hosting
-
-Managed MySQL
-
-Object Storage / CDN
-
-HTTPS wajib
-
-Install Dependencies
-       ↓
-Generate Prisma Client
-       ↓
-Lint
-       ↓
-Test
-       ↓
-Production Build
-       ↓
-Production Migration
-       ↓
-Deploy
-       ↓
-Smoke Test
-       ↓
-🚀 LIVE
-
-✅ Definition of Done
-
-Semua route utama tersedia
-
-Semua navigation dan CTA bekerja
-
-Website publik tanpa navbar/footer tradisional
-
-Responsive 320px → desktop besar
-
-Tidak ada horizontal overflow
-
-3D memiliki fallback
-
-CMS authentication aman
-
-RBAC berjalan server-side
-
-Konten utama dapat dikelola dari CMS
-
-Inquiry tersimpan ke database
-
-Mini CRM berfungsi
-
-Project Brief memiliki validation & anti-spam
-
-Draft / Preview / Publish berfungsi
-
-Media Library berfungsi
-
-SEO dapat dikelola
-
-Sitemap & robots valid
-
-Reduced-motion berfungsi
-
-Keyboard navigation berfungsi
-
-Migration berjalan pada database kosong
-
-npm run lint berhasil
-
-npm run test berhasil
-
-npm run build berhasil
-
-Tidak ada secret di source control
-
-Tidak ada blocker TODO, FIXME, stub, atau mock API
-
-Browser console bersih pada flow utama
-
-🚫 Anti Fake / Anti AI-Slop
-
-- Fake testimonials
-- Fake client logos
-- Fake ratings
-- Fake project metrics
-- Fake company claims
-- Lorem ipsum
-- Random gradient blobs everywhere
-- Generic agency template
-- Meaningless sparkles everywhere
-
-+ Real content
-+ Honest empty states
-+ Clearly labeled concept projects
-+ Purposeful motion
-+ Strong visual identity
-+ Useful interactions
-
-🗺️ Development Roadmap
-
-Phase 0 → Audit & Setup
-Phase 1 → Design System & Public Shell
-Phase 2 → Public Pages
-Phase 3 → Database & Authentication
-Phase 4 → CMS Content
-Phase 5 → Inquiry & Mini CRM
-Phase 6 → Motion, 3D & Polish
-Phase 7 → SEO, Security & Performance
-Phase 8 → QA & Handover
-
-🧃 Before Launch
-
-Nama startup
-
-Logo / brand mark
-
-Tagline
-
-Company description
-
-Daftar layanan
-
-Email
-
-WhatsApp
-
-Social links
-
-Area layanan / alamat
-
-Jam respons
-
-Budget range
-
-Team
-
-Real / approved concept projects
-
-Revision policy
-
-Privacy policy
-
-Terms
-
-Domain
-
-Hosting
-
-Database provider
-
-Storage provider
-
-Email provider
-
-🤝 Git Workflow
-
-git checkout -b feature/your-feature
-npm run lint
-npm run test
-npm run build
-git commit -m "feat: add your feature"
-
-Commit examples:
-
-feat: add project brief flow
-fix: prevent duplicate inquiry submit
-ui: improve mobile floating dock
-refactor: split project service layer
-test: add publishing integration test
-
-🧑‍💻 Developer Notes
-
-if (feature.looksCool && !feature.hasPurpose) {
-  remove(feature);
 }
+```
 
-if (mobileExperience === "afterthought") {
-  throw new Error("Mobile is a first-class experience.");
-}
+---
 
-while (bugs.length > 0) {
-  fix(bugs.shift());
-}
+# 🧃 Coding Mood
 
-ship(); // 🚀
+```txt
+
+           ┌─────────────────┐
+           │   ☕ COFFEE      │
+           └────────┬────────┘
+                    │
+                    ▼
+              ┌───────────┐
+              │   IDEA    │
+              └─────┬─────┘
+                    │
+                    ▼
+              ┌───────────┐
+              │   CODE    │
+              └─────┬─────┘
+                    │
+              ┌─────▼─────┐
+              │   ERROR   │
+              └─────┬─────┘
+                    │
+                    ▼
+                GOOGLE
+                    │
+                    ▼
+                  FIX
+                    │
+                    ▼
+              ┌───────────┐
+              │   SHIP 🚀 │
+              └───────────┘
+```
+
+---
+
+# 💬 Final Note
+
+Project ini dibangun dengan satu tujuan sederhana:
+
+> **Membuat digital product yang tidak hanya bekerja, tetapi juga punya karakter.**
+
+Tidak harus menjadi website paling ramai.
+
+Tidak harus memiliki efek paling banyak.
+
+Tidak harus menggunakan teknologi paling kompleks.
+
+Yang penting:
+
+```txt
+FUN.
+FAST.
+USEFUL.
+SECURE.
+MEMORABLE.
+```
 
 <div align="center">
 
-🎨 Build Something People Remember.
+<br>
 
-Not another boring agency template.
+### `</BUILD SOMETHING FUN>`
 
-< DESIGN /> + { CODE } + [ BUSINESS ]
-                  ↓
-              🚀 SHIP IT
+🧩 + 🎨 + 💻 = 🚀
 
-Made with ☕, curiosity, too many browser tabs, and clean commits.
+**Made with code, curiosity, and probably too much coffee ☕**
 
-© [YEAR] [NAMA STARTUP] — All rights reserved.
+<br>
+
+`[NAMA STARTUP] © 2026`
 
 </div>
