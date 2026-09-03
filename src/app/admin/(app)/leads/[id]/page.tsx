@@ -25,7 +25,7 @@ export default async function LeadDetailPage({
 
   if (!lead) notFound();
 
-  const [notes, activities, team] = await Promise.all([
+  const [notes, activities, team, attachments] = await Promise.all([
     prisma.inquiryNote.findMany({
       where: { inquiryId: id },
       include: { author: { select: { name: true } } },
@@ -40,6 +40,10 @@ export default async function LeadDetailPage({
       where: { status: "ACTIVE" },
       select: { id: true, name: true },
       orderBy: { name: "asc" },
+    }),
+    prisma.inquiryAttachment.findMany({
+      where: { inquiryId: id },
+      orderBy: { createdAt: "asc" },
     }),
   ]);
 
@@ -89,6 +93,14 @@ export default async function LeadDetailPage({
           createdAt: a.createdAt.toISOString(),
         }))}
         team={team.map((t) => ({ id: t.id, name: t.name }))}
+        attachments={attachments.map((a) => ({
+          id: a.id,
+          originalName: a.originalName,
+          mimeType: a.mimeType,
+          sizeBytes: a.sizeBytes,
+          createdAt: a.createdAt.toISOString(),
+          url: `/api/leads/${id}/attachments/${a.id}`,
+        }))}
       />
     </div>
   );

@@ -38,6 +38,18 @@ const inquirySchema = z.object({
     .refine((v) => v === true, "Kamu perlu menyetujui kebijakan privasi"),
   honeypot: z.string().max(0).optional().default(""),
   startedAt: z.number().int(),
+  attachments: z
+    .array(
+      z.object({
+        uploadId: z.string().regex(/^[0-9a-f]{18}$/, "Referensi file tidak valid"),
+        originalName: z.string().trim().min(1).max(200),
+        mimeType: z.string().trim().max(200),
+        sizeBytes: z.number().int().min(0),
+      })
+    )
+    .max(3)
+    .optional()
+    .default([]),
 });
 
 function generateReference(): string {
@@ -108,6 +120,17 @@ export async function submitInquiry(
             metadataJson: { stepCount: 4, preferredContact: data.preferredContact },
           },
         },
+        attachments:
+          data.attachments.length > 0
+            ? {
+                create: data.attachments.map((a) => ({
+                  privateStorageKey: a.uploadId,
+                  originalName: a.originalName,
+                  mimeType: a.mimeType,
+                  sizeBytes: a.sizeBytes,
+                })),
+              }
+            : undefined,
       },
     });
 

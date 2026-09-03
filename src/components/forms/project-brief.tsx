@@ -4,10 +4,11 @@ import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, PartyPopper } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { siteConfig, whatsappLink } from "@/lib/site";
+import { whatsappLink } from "@/lib/site";
 import { servicesList, budgetRanges, responseTimeText } from "@/lib/content";
 import { submitInquiry, type SubmitInquiryResult } from "@/actions/inquiries";
 import { ToyButton } from "@/components/ui/button";
+import { AttachmentUpload, type AttachmentDescriptor } from "@/components/forms/attachment-upload";
 
 const preferredContacts = [
   { value: "WHATSAPP", label: "WhatsApp" },
@@ -58,6 +59,7 @@ type FormState = {
   targetDate: string;
   budgetRange: string;
   consent: boolean;
+  attachments: AttachmentDescriptor[];
 };
 
 const emptyForm: FormState = {
@@ -75,6 +77,7 @@ const emptyForm: FormState = {
   targetDate: "",
   budgetRange: "",
   consent: false,
+  attachments: [],
 };
 
 export function ProjectBriefForm({ prefillType = "" }: { prefillType?: string }) {
@@ -171,6 +174,7 @@ export function ProjectBriefForm({ prefillType = "" }: { prefillType?: string })
       consent: form.consent,
       honeypot: "",
       startedAt: startedAt.current ?? Date.now(),
+      attachments: form.attachments,
     });
     setResult(res);
     if (res.ok) {
@@ -465,12 +469,9 @@ export function ProjectBriefForm({ prefillType = "" }: { prefillType?: string })
                   ))}
                 </div>
               </fieldset>
-              <div className="rounded-xl border-2 border-dashed border-ink/25 bg-paper p-4 text-sm text-ink/70">
-                Butuh kirim file pendukung (brosur, logo, contoh desain)? Kirim lewat email{" "}
-                <a href={`mailto:${siteConfig.email}`} className="font-semibold text-purple underline underline-offset-4">
-                  {siteConfig.email}
-                </a>{" "}
-                atau WhatsApp — cukup sebut nomor referensimu nanti.
+              <div>
+                <p className="mb-2 block text-sm font-semibold text-ink/80">File pendukung (opsional)</p>
+                <AttachmentUpload onChange={(files) => set({ attachments: files })} />
               </div>
             </div>
           </fieldset>

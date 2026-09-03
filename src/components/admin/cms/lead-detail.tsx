@@ -68,9 +68,17 @@ export type LeadDetailProps = {
   }[];
   activities: { id: string; action: string; actorName: string | null; createdAt: string }[];
   team: { id: string; name: string }[];
+  attachments: {
+    id: string;
+    originalName: string;
+    mimeType: string;
+    sizeBytes: number;
+    createdAt: string;
+    url: string;
+  }[];
 };
 
-export function LeadDetail({ lead, notes, activities, team }: LeadDetailProps) {
+export function LeadDetail({ lead, notes, activities, team, attachments }: LeadDetailProps) {
   const router = useRouter();
   const [currentStatus, setCurrentStatus] = useState<LeadStatus>(lead.status);
   const [assignee, setAssignee] = useState<string | null>(lead.assigneeId);
@@ -282,6 +290,29 @@ export function LeadDetail({ lead, notes, activities, team }: LeadDetailProps) {
                 <a href={lead.referenceUrl} target="_blank" rel="noopener noreferrer" className="mt-1 inline-block text-sm font-semibold text-purple underline underline-offset-4">
                   {lead.referenceUrl}
                 </a>
+              </div>
+            )}
+            {attachments.length > 0 && (
+              <div className="mt-4">
+                <p className="text-xs font-bold uppercase tracking-wide text-ink/50">Lampiran</p>
+                <ul className="mt-1.5 space-y-1.5">
+                  {attachments.map((a) => (
+                    <li key={a.id}>
+                      <a
+                        href={a.url}
+                        className="flex items-center justify-between gap-3 rounded-lg border-2 border-ink/20 bg-paper px-3 py-2 text-sm hover:border-purple"
+                      >
+                        <span className="flex min-w-0 items-center gap-2">
+                          <Paperclip className="h-4 w-4 shrink-0 text-purple" />
+                          <span className="truncate font-semibold text-ink">{a.originalName}</span>
+                        </span>
+                        <span className="shrink-0 text-xs text-ink/55">
+                          {(a.sizeBytes / 1024).toFixed(0)} KB · {formatDate(a.createdAt)} · Unduh
+                        </span>
+                      </a>
+                    </li>
+                  ))}
+                </ul>
               </div>
             )}
             <p className="mt-4 border-t-2 border-dashed border-ink/15 pt-3 text-xs text-ink/50">

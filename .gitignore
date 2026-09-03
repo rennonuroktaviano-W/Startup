@@ -43,6 +43,9 @@ yarn-error.log*
 # local dev data, storage and mysql
 /.data/
 
+# private user-uploaded attachments (inquiry files)
+/private/
+
 # local sqlite fallback
 *.db
 *.sqlite
