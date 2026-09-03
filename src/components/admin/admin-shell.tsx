@@ -3,7 +3,7 @@ import { LayoutDashboard, LogOut, FileText, FolderKanban, Newspaper, HelpCircle,
 import { siteConfig } from "@/lib/site";
 import type { SessionUser } from "@/lib/auth/session";
 import { logout } from "@/actions/auth";
-import { AdminMobileNav } from "@/components/admin/admin-mobile-nav";
+import { AdminMobileNav, type AdminMobileNavGroup } from "@/components/admin/admin-mobile-nav";
 import { toySwitchFromRole } from "@/lib/admin-ui";
 import { can, type Capability } from "@/lib/permissions";
 
@@ -11,6 +11,7 @@ export type AdminNavItem = {
   label: string;
   href: string;
   icon: React.ComponentType<{ className?: string }>;
+  iconKey: string;
   capability?: Capability;
 };
 
@@ -23,35 +24,35 @@ const navItems: AdminNavGroup = [
   {
     section: "Utama",
     items: [
-      { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard },
-      { label: "Prospek", href: "/admin/leads", icon: Inbox },
+      { label: "Dashboard", href: "/admin/dashboard", icon: LayoutDashboard, iconKey: "dashboard" },
+      { label: "Prospek", href: "/admin/leads", icon: Inbox, iconKey: "inbox" },
     ],
   },
   {
     section: "Konten",
     items: [
-      { label: "Layanan", href: "/admin/services", icon: FileText },
-      { label: "Proyek", href: "/admin/projects", icon: FolderKanban },
-      { label: "Blog", href: "/admin/blog", icon: Newspaper },
-      { label: "FAQ", href: "/admin/faqs", icon: HelpCircle },
-      { label: "Testimoni", href: "/admin/testimonials", icon: MessageSquareQuote },
-      { label: "Klien", href: "/admin/clients", icon: Users },
-      { label: "Tim", href: "/admin/team", icon: Users },
+      { label: "Layanan", href: "/admin/services", icon: FileText, iconKey: "fileText" },
+      { label: "Proyek", href: "/admin/projects", icon: FolderKanban, iconKey: "folderKanban" },
+      { label: "Blog", href: "/admin/blog", icon: Newspaper, iconKey: "newspaper" },
+      { label: "FAQ", href: "/admin/faqs", icon: HelpCircle, iconKey: "helpCircle" },
+      { label: "Testimoni", href: "/admin/testimonials", icon: MessageSquareQuote, iconKey: "quote" },
+      { label: "Klien", href: "/admin/clients", icon: Users, iconKey: "users" },
+      { label: "Tim", href: "/admin/team", icon: Users, iconKey: "users" },
     ],
   },
   {
     section: "Website",
     items: [
-      { label: "Media", href: "/admin/media", icon: ImageIcon },
-      { label: "Navigasi", href: "/admin/navigation", icon: Navigation },
-      { label: "Pengaturan", href: "/admin/settings", icon: Settings },
+      { label: "Media", href: "/admin/media", icon: ImageIcon, iconKey: "image" },
+      { label: "Navigasi", href: "/admin/navigation", icon: Navigation, iconKey: "navigation" },
+      { label: "Pengaturan", href: "/admin/settings", icon: Settings, iconKey: "settings" },
     ],
   },
   {
     section: "Sistem",
     items: [
-      { label: "Audit Log", href: "/admin/audit-logs", icon: ScrollText, capability: "audit:read" },
-      { label: "Users", href: "/admin/users", icon: UserCog, capability: "users:manage" },
+      { label: "Audit Log", href: "/admin/audit-logs", icon: ScrollText, iconKey: "scrollText", capability: "audit:read" },
+      { label: "Users", href: "/admin/users", icon: UserCog, iconKey: "userCog", capability: "users:manage" },
     ],
   },
 ];
@@ -70,6 +71,11 @@ export function AdminShell({
       items: group.items.filter((item) => !item.capability || can(user.role, item.capability as Capability)),
     }))
     .filter((group) => group.items.length > 0);
+
+  const mobileGroups: AdminMobileNavGroup = visibleGroups.map((group) => ({
+    section: group.section,
+    items: group.items.map(({ label, href, iconKey }) => ({ label, href, iconKey })),
+  }));
 
   return (
     <div className="min-h-screen bg-paper">
@@ -126,7 +132,7 @@ export function AdminShell({
         {/* Mobile: topbar + drawer */}
         <div className="flex min-w-0 flex-1 flex-col">
           <header className="sticky top-0 z-30 flex items-center justify-between gap-3 border-b-2 border-ink bg-surface/90 px-4 py-3 backdrop-blur lg:hidden">
-            <AdminMobileNav navGroups={visibleGroups} user={user} roleLabel={roleLabel} />
+            <AdminMobileNav navGroups={mobileGroups} user={user} roleLabel={roleLabel} />
             <Link href="/" className="flex items-center gap-2">
               <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-ink bg-lemon font-display text-xs font-bold">
                 KI

@@ -2,16 +2,59 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X } from "lucide-react";
+import {
+  Menu,
+  X,
+  LayoutDashboard,
+  Inbox,
+  FileText,
+  FolderKanban,
+  Newspaper,
+  HelpCircle,
+  MessageSquareQuote,
+  Users,
+  Image as ImageIcon,
+  Navigation,
+  Settings,
+  ScrollText,
+  UserCog,
+  type LucideIcon,
+} from "lucide-react";
 import type { SessionUser } from "@/lib/auth/session";
-import type { AdminNavGroup } from "@/components/admin/admin-shell";
+
+export type AdminMobileNavItem = {
+  label: string;
+  href: string;
+  iconKey: string;
+};
+
+export type AdminMobileNavGroup = {
+  section: string;
+  items: AdminMobileNavItem[];
+}[];
+
+const ICONS: Record<string, LucideIcon> = {
+  dashboard: LayoutDashboard,
+  inbox: Inbox,
+  fileText: FileText,
+  folderKanban: FolderKanban,
+  newspaper: Newspaper,
+  helpCircle: HelpCircle,
+  quote: MessageSquareQuote,
+  users: Users,
+  image: ImageIcon,
+  navigation: Navigation,
+  settings: Settings,
+  scrollText: ScrollText,
+  userCog: UserCog,
+};
 
 export function AdminMobileNav({
   navGroups,
   user,
   roleLabel,
 }: {
-  navGroups: AdminNavGroup;
+  navGroups: AdminMobileNavGroup;
   user: SessionUser;
   roleLabel: string;
 }) {
@@ -55,17 +98,20 @@ export function AdminMobileNav({
                     {group.section}
                   </p>
                   <ul className="space-y-1">
-                    {group.items.map((item) => (
-                      <li key={item.href}>
-                        <Link
-                          href={item.href}
-                          onClick={() => setOpen(false)}
-                          className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-semibold text-ink/75"
-                        >
-                          <item.icon className="h-4 w-4" /> {item.label}
-                        </Link>
-                      </li>
-                    ))}
+                    {group.items.map((item) => {
+                      const Icon = ICONS[item.iconKey] ?? LayoutDashboard;
+                      return (
+                        <li key={item.href}>
+                          <Link
+                            href={item.href}
+                            onClick={() => setOpen(false)}
+                            className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-semibold text-ink/75"
+                          >
+                            <Icon className="h-4 w-4" /> {item.label}
+                          </Link>
+                        </li>
+                      );
+                    })}
                   </ul>
                 </div>
               ))}
