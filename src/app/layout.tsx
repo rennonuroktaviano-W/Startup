@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { Fredoka, Plus_Jakarta_Sans } from "next/font/google";
+import { siteConfig } from "@/lib/site";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -14,26 +15,45 @@ const jakarta = Plus_Jakarta_Sans({
   display: "swap",
 });
 
-const siteName = "KotakIde Studio";
+const siteName = siteConfig.name;
 
 export const metadata: Metadata = {
-  metadataBase: new URL("http://localhost:3000"),
+  metadataBase: new URL(siteConfig.siteUrl),
   title: {
     default: `${siteName} — Studio Website & Aplikasi`,
     template: `%s — ${siteName}`,
   },
-  description:
-    "Studio web kecil dengan ide besar. Kami merancang dan membangun website, web application, dan dashboard yang terasa hidup, mudah dikelola, dan nyaman di semua layar.",
+  description: siteConfig.defaultOgDescription,
   openGraph: {
     siteName,
     type: "website",
     locale: "id_ID",
   },
+  robots: {
+    index: true,
+    follow: true,
+  },
+};
+
+const organizationJsonLd = {
+  "@context": "https://schema.org",
+  "@type": "Organization",
+  name: siteName,
+  url: siteConfig.siteUrl,
+  email: siteConfig.email,
+  description: siteConfig.description,
+  sameAs: [`https://wa.me/${siteConfig.whatsapp}`],
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="id" className={`${fredoka.variable} ${jakarta.variable} h-full antialiased`}>
+      <head>
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
+        />
+      </head>
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
   );

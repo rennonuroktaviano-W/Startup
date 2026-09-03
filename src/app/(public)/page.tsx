@@ -31,7 +31,7 @@ export default async function HomePage() {
   return (
     <>
       {/* ---- Hero ---- */}
-      <section className="relative overflow-hidden">
+      <section data-motion-hero className="relative overflow-hidden">
         <div className="bg-grain absolute inset-0" />
         <div className="relative mx-auto grid max-w-6xl gap-10 px-5 pb-10 pt-28 md:grid-cols-[1.1fr_1fr] md:items-center md:px-10 md:pb-16 md:pt-36">
           <Reveal className="order-2 md:order-1">

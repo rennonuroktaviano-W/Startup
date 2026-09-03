@@ -65,6 +65,14 @@ body {
   }
 }
 
+/* Pause decorative animation when the tab is hidden or hero is off-screen
+   (driven by VisibilityPause). */
+html.motion-paused *,
+html.motion-paused *::before,
+html.motion-paused *::after {
+  animation-play-state: paused !important;
+}
+
 /* Accessible focus that still feels on-brand. */
 :focus-visible {
   outline: 3px solid var(--purple);

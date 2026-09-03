@@ -2,6 +2,7 @@ import { Toaster } from "sonner";
 import { FloatingNav } from "@/components/public/floating-nav";
 import { ClosingPlayground } from "@/components/public/closing-playground";
 import { CustomCursor } from "@/components/public/custom-cursor";
+import { VisibilityPause } from "@/components/public/visibility-pause";
 
 export default function PublicLayout({ children }: { children: React.ReactNode }) {
   return (
@@ -16,6 +17,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       <main id="main">{children}</main>
       <ClosingPlayground />
       <CustomCursor />
+      <VisibilityPause />
       <Toaster position="top-center" closeButton richColors />
     </>
   );
