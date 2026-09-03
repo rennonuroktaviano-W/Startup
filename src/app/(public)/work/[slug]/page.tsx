@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { Target } from "lucide-react";
-import { getProject, projectsList } from "@/lib/content";
+import { getPublishedProject, getPublishedProjects } from "@/lib/public-data";
 import { buildMetadata } from "@/lib/seo";
 import { ToyButton } from "@/components/ui/button";
 import { ArtFrame } from "@/components/public/art";
@@ -10,7 +10,7 @@ import { Reveal } from "@/components/motion/reveal";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const project = getProject(slug);
+  const project = await getPublishedProject(slug);
   if (!project) return buildMetadata({ title: "Proyek tidak ditemukan", noIndex: true });
   const label = project.projectType === "CONCEPT" ? "Concept / Internal Experiment" : "Karya Klien";
   return buildMetadata({
@@ -22,10 +22,10 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
 
 export default async function CaseStudyPage({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
-  const project = getProject(slug);
+  const [project, allProjects] = await Promise.all([getPublishedProject(slug), getPublishedProjects()]);
   if (!project) notFound();
 
-  const related = projectsList.filter((p) => p.slug !== project.slug).slice(0, 2);
+  const related = allProjects.filter((p) => p.slug !== project.slug).slice(0, 2);
 
   return (
     <>

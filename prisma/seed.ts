@@ -1,7 +1,7 @@
 import { PrismaClient, FAQCategory } from "@prisma/client";
 import { hash } from "argon2";
 import { siteConfig } from "../src/lib/site";
-import { servicesList, homeFaqs } from "../src/lib/content";
+import { servicesList, homeFaqs, projectsList } from "../src/lib/content";
 
 const prisma = new PrismaClient();
 
@@ -186,10 +186,57 @@ async function seedNavigation() {
   console.log(`Navigation tersedia: ${nav.length} item.`);
 }
 
+async function seedProjects() {
+  for (let i = 0; i < projectsList.length; i++) {
+    const p = projectsList[i];
+    if (p.projectType !== "CONCEPT") continue;
+
+    const serviceIds: string[] = [];
+    for (const svc of p.services) {
+      const s = await prisma.service.findUnique({ where: { slug: svc.slug } });
+      if (s) serviceIds.push(s.id);
+    }
+
+    const existing = await prisma.project.findUnique({ where: { slug: p.slug } });
+    const metaDescription = p.summary.slice(0, 160);
+    const data = {
+      slug: p.slug,
+      title: p.title,
+      projectType: "CONCEPT" as const,
+      industry: p.industry ?? null,
+      year: p.year ?? null,
+      summary: p.summary,
+      challengeJson: p.challenge as never,
+      goalsJson: p.goals as never,
+      approachJson: p.approach as never,
+      highlightsJson: p.highlights as never,
+      outcomeJson: p.outcome as never,
+      isFeatured: i === 0,
+      status: "PUBLISHED" as const,
+      metaTitle: `${p.title} (Concept / Internal Experiment)`,
+      metaDescription,
+    };
+
+    const project = existing
+      ? await prisma.project.update({ where: { slug: p.slug }, data })
+      : await prisma.project.create({ data });
+
+    if (serviceIds.length) {
+      await prisma.projectService.deleteMany({ where: { projectId: project.id } });
+      await prisma.projectService.createMany({
+        data: serviceIds.map((serviceId) => ({ projectId: project.id, serviceId })),
+        skipDuplicates: true,
+      });
+    }
+  }
+  console.log(`Concept projects tersedia: ${projectsList.filter((p) => p.projectType === "CONCEPT").length}.`);
+}
+
 async function main() {
   await seedAdmin();
   await seedSettings();
   await seedServices();
+  await seedProjects();
   await seedFaqs();
   await seedNavigation();
   console.log("Seed selesai.");

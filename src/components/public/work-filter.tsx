@@ -2,26 +2,34 @@
 
 import { useMemo, useState } from "react";
 import { Search, RotateCcw } from "lucide-react";
-import { projectsList, type ProjectType } from "@/lib/content";
+import { type Project, type ProjectType } from "@/lib/content";
 import { ProjectCard } from "@/components/public/project-card";
 import { EmptyState } from "@/components/ui/empty-state";
 import { cn } from "@/lib/utils";
 
-const serviceOptions = Array.from(new Set(projectsList.flatMap((p) => p.services.map((s) => s.slug))));
-
-export function WorkFilter() {
+export function WorkFilter({ projects }: { projects: Project[] }) {
   const [query, setQuery] = useState("");
   const [service, setService] = useState<string>("all");
   const [type, setType] = useState<"all" | ProjectType>("all");
 
+  const serviceOptions = useMemo(
+    () => Array.from(new Set(projects.flatMap((p) => p.services.map((s) => s.slug)))),
+    [projects],
+  );
+  const serviceLabel = useMemo(() => {
+    const map = new Map<string, string>();
+    for (const p of projects) for (const s of p.services) if (!map.has(s.slug)) map.set(s.slug, s.name);
+    return map;
+  }, [projects]);
+
   const filtered = useMemo(() => {
-    let list = projectsList;
+    let list = projects;
     const q = query.trim().toLowerCase();
     if (q) list = list.filter((p) => p.title.toLowerCase().includes(q) || p.summary.toLowerCase().includes(q));
     if (service !== "all") list = list.filter((p) => p.services.some((s) => s.slug === service));
     if (type !== "all") list = list.filter((p) => p.projectType === type);
     return list;
-  }, [query, service, type]);
+  }, [projects, query, service, type]);
 
   const hasFilter = query !== "" || service !== "all" || type !== "all";
 
@@ -48,7 +56,7 @@ export function WorkFilter() {
           <option value="all">Semua layanan</option>
           {serviceOptions.map((slug) => (
             <option key={slug} value={slug}>
-              {projectsList.find((p) => p.services.some((s) => s.slug === slug))?.services.find((s) => s.slug === slug)?.name}
+              {serviceLabel.get(slug) ?? slug}
             </option>
           ))}
         </select>

@@ -1,6 +1,6 @@
 import "server-only";
 import { prisma } from "@/lib/db";
-import type { Faq, Service, ServiceTone } from "@/lib/content";
+import type { Faq, Project, ProjectMetric, Service, ServiceTone } from "@/lib/content";
 import { serviceMeta, serviceProcess, serviceOutcome, serviceFaqs as serviceFaqsBySlug } from "@/lib/design-meta";
 
 function processDefault(slug: string) {
@@ -109,4 +109,118 @@ export async function getPublicClients(): Promise<{ id: string; name: string; we
     websiteUrl: c.websiteUrl,
     logoUrl: c.logoMediaId ? (logoUrl.get(c.logoMediaId) ?? null) : null,
   }));
+}
+
+/** Resolve a stored JSON column that may be a string, an already-parsed array, or a JSON-encoded string. */
+function readList(value: unknown): string[] {
+  if (Array.isArray(value)) return value.map(String);
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return [];
+    try {
+      const parsed = JSON.parse(trimmed);
+      return Array.isArray(parsed) ? parsed.map(String) : [trimmed];
+    } catch {
+      return [trimmed];
+    }
+  }
+  return [];
+}
+
+function readText(value: unknown): string {
+  if (typeof value === "string") {
+    const trimmed = value.trim();
+    if (!trimmed) return "";
+    try {
+      const parsed = JSON.parse(trimmed);
+      return typeof parsed === "string" ? parsed : Array.isArray(parsed) ? parsed.join("\n") : trimmed;
+    } catch {
+      return trimmed;
+    }
+  }
+  return "";
+}
+
+/** Derive the ArtFrame kind for a project when no real media cover exists. */
+function artForProject(slug: string, industry?: string | null): "browser" | "dashboard" | "phone" {
+  const hay = `${slug} ${industry ?? ""}`.toLowerCase();
+  if (/(kasir|pos|phone|mobile|tablet|app)/.test(hay)) return "phone";
+  if (/(dashboard|admin|cms|analytics|panel|report)/.test(hay)) return "dashboard";
+  return "browser";
+}
+
+export type PublicProject = Project;
+
+interface ProjectRow {
+  slug: string;
+  title: string;
+  projectType: string;
+  industry: string | null;
+  year: number | null;
+  summary: string | null;
+  challengeJson: unknown;
+  goalsJson: unknown;
+  approachJson: unknown;
+  highlightsJson: unknown;
+  outcomeJson: unknown;
+  projectServices: { serviceId: string; service: { slug: string; name: string } | null }[];
+  projectMetrics: { label: string; value: string; unit: string | null; sourceNote: string | null }[];
+  projectMedia: { layoutVariant: string | null; caption: string | null; sortOrder: number }[];
+}
+
+async function projectToPublic(row: ProjectRow): Promise<Project> {
+  const services = row.projectServices
+    .map((ps) => ({ slug: ps.service?.slug ?? ps.serviceId, name: ps.service?.name ?? ps.serviceId }))
+    .filter((s) => s.slug);
+  const metrics: ProjectMetric[] = row.projectMetrics
+    .map((m) => ({ label: m.label, value: m.value, sourceNote: m.sourceNote ?? undefined }))
+    .filter((m) => m.label && m.value);
+  const coverArt = artForProject(row.slug, row.industry);
+  return {
+    slug: row.slug,
+    title: row.title,
+    projectType: row.projectType as "CLIENT" | "CONCEPT",
+    industry: row.industry ?? "",
+    year: row.year ?? new Date().getFullYear(),
+    summary: row.summary ?? "",
+    challenge: readText(row.challengeJson),
+    goals: readList(row.goalsJson),
+    approach: readText(row.approachJson),
+    highlights: readList(row.highlightsJson),
+    outcome: readText(row.outcomeJson),
+    metrics,
+    services,
+    cover: { label: `${row.title} — Visual utama`, art: coverArt },
+    galleryArts: row.projectMedia
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((pm) => ({
+        label: pm.caption ?? "Cuplikan proyek",
+        art: artForProject(pm.layoutVariant ?? "", row.industry),
+      })),
+  };
+}
+
+export async function getPublishedProjects(): Promise<Project[]> {
+  const rows = await prisma.project.findMany({
+    where: { status: "PUBLISHED", deletedAt: null },
+    orderBy: [{ isFeatured: "desc" }, { publishedAt: "desc" }],
+    include: {
+      projectServices: { include: { service: { select: { slug: true, name: true } } } },
+      projectMetrics: { orderBy: { sortOrder: "asc" } },
+      projectMedia: { orderBy: { sortOrder: "asc" } },
+    },
+  });
+  return Promise.all(rows.map((row) => projectToPublic(row)));
+}
+
+export async function getPublishedProject(slug: string): Promise<Project | undefined> {
+  const row = await prisma.project.findFirst({
+    where: { slug, status: "PUBLISHED", deletedAt: null },
+    include: {
+      projectServices: { include: { service: { select: { slug: true, name: true } } } },
+      projectMetrics: { orderBy: { sortOrder: "asc" } },
+      projectMedia: { orderBy: { sortOrder: "asc" } },
+    },
+  });
+  return row ? projectToPublic(row) : undefined;
 }

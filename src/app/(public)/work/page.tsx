@@ -1,7 +1,9 @@
 import { siteConfig } from "@/lib/site";
 import { buildMetadata } from "@/lib/seo";
+import { getPublishedProjects } from "@/lib/public-data";
 import { SectionHeader } from "@/components/public/section-header";
 import { WorkFilter } from "@/components/public/work-filter";
+import { EmptyState } from "@/components/ui/empty-state";
 import { Reveal } from "@/components/motion/reveal";
 import { ToyButton } from "@/components/ui/button";
 
@@ -11,7 +13,8 @@ export const metadata = buildMetadata({
     "Portofolio dan eksperimen KotakIde Studio. Sejauh ini berupa concept project internal — proyek klien menyusul dan akan ditampilkan di sini.",
 });
 
-export default function WorkPage() {
+export default async function WorkPage() {
+  const projects = await getPublishedProjects();
   return (
     <>
       <section className="relative overflow-hidden">
@@ -37,7 +40,15 @@ export default function WorkPage() {
 
       <section className="mx-auto max-w-6xl px-5 pb-20 md:px-10">
         <Reveal>
-          <WorkFilter />
+          {projects.length > 0 ? (
+            <WorkFilter projects={projects} />
+          ) : (
+            <EmptyState
+              tone="coral"
+              title="Belum ada karya yang diterbitkan"
+              description="Concept project dan portofolio klien akan tampil di sini segera setelah diterbitkan dari panel admin."
+            />
+          )}
         </Reveal>
       </section>
 

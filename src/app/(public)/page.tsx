@@ -1,7 +1,7 @@
 import { Sparkle } from "lucide-react";
 import { siteConfig } from "@/lib/site";
-import { getFeaturedProjects, principles } from "@/lib/content";
-import { getPublishedServices, getPublishedFaqs } from "@/lib/public-data";
+import { principles } from "@/lib/content";
+import { getPublishedServices, getPublishedFaqs, getPublishedProjects } from "@/lib/public-data";
 import { buildMetadata } from "@/lib/seo";
 import { ToyButton } from "@/components/ui/button";
 import { SectionHeader } from "@/components/public/section-header";
@@ -19,8 +19,12 @@ export const metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [services, homeFaqs] = await Promise.all([getPublishedServices(), getPublishedFaqs()]);
-  const featured = getFeaturedProjects();
+  const [services, homeFaqs, projects] = await Promise.all([
+    getPublishedServices(),
+    getPublishedFaqs(),
+    getPublishedProjects(),
+  ]);
+  const featured = projects.filter((p) => p.projectType === "CONCEPT" || true).slice(0, 3);
   const hasWork = featured.length > 0;
   const hasServices = services.length > 0;
 
