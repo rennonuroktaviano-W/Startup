@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🚀 [NAMA STARTUP]
+# 🚀 [Kotak Ide Studio]
 
 ### `Creative Digital Studio • Website • Web App • UI • CMS`
 
