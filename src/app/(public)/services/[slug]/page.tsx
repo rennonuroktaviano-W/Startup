@@ -5,6 +5,7 @@ import { getPublishedService } from "@/lib/public-data";
 import { buildMetadata } from "@/lib/seo";
 import { cn } from "@/lib/utils";
 import { type Tone, toneBg, toneSoft } from "@/lib/tone";
+import { TrackOnce } from "@/components/analytics/track-once";
 import { ToyButton } from "@/components/ui/button";
 import { FaqAccordion } from "@/components/public/faq-accordion";
 import { Reveal } from "@/components/motion/reveal";
@@ -30,6 +31,7 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
   return (
     <>
+      <TrackOnce event="service_view" props={{ slug: service.slug }} />
       <section className="relative overflow-hidden">
         <div className="bg-grain absolute inset-0" />
         <div className="relative mx-auto max-w-6xl px-5 pb-12 pt-32 md:px-10 md:pt-36">

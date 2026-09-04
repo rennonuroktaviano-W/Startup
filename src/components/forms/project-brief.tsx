@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { whatsappLink, siteConfig } from "@/lib/site";
 import { servicesList, budgetRanges, responseTimeText } from "@/lib/content";
 import { submitInquiry, type SubmitInquiryResult } from "@/actions/inquiries";
+import { useAnalytics } from "@/components/analytics/analytics-provider";
 import { ToyButton } from "@/components/ui/button";
 import { AttachmentUpload, type AttachmentDescriptor } from "@/components/forms/attachment-upload";
 
@@ -102,6 +103,7 @@ export function ProjectBriefForm({
   const [result, setResult] = useState<SubmitInquiryResult | null>(null);
   const [serverMessage, setServerMessage] = useState("");
   const startedAt = useRef<number | null>(null);
+  const { track } = useAnalytics();
 
   const set = (patch: Partial<FormState>) => {
     setForm((f) => ({ ...f, ...patch }));
@@ -136,7 +138,12 @@ export function ProjectBriefForm({
 
   const goNext = () => {
     if (!validateStep(step)) return;
-    if (!startedAt.current) startedAt.current = Date.now();
+    if (!startedAt.current) {
+      startedAt.current = Date.now();
+      track("brief_started");
+    } else {
+      track("brief_step_completed", { step: String(step) });
+    }
     setStep((s) => Math.min(s + 1, 3));
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -189,9 +196,11 @@ export function ProjectBriefForm({
     setResult(res);
     if (res.ok) {
       setStatus("success");
+      track("brief_submitted");
       window.scrollTo({ top: 0, behavior: "smooth" });
     } else {
       setStatus("error");
+      track("brief_error", { reason: "submit" });
       setServerMessage(res.message);
       if (res.errors) {
         setErrors(res.errors);
@@ -218,7 +227,10 @@ export function ProjectBriefForm({
           Kami akan menghubungimu, {responseCopy}. Mau lebih cepat?
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <ToyButton href={whatsappLink(`Halo, saya ${form.name}. Saya baru kirim project brief nomor ${result.referenceNumber}.`, chatNumber)}>
+          <ToyButton
+            href={whatsappLink(`Halo, saya ${form.name}. Saya baru kirim project brief nomor ${result.referenceNumber}.`, chatNumber)}
+            onClick={() => track("whatsapp_click", { label: "brief_success" })}
+          >
             Chat WhatsApp Sekarang
           </ToyButton>
           <ToyButton href="/" variant="secondary">

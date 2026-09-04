@@ -5,11 +5,13 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { cn } from "@/lib/utils";
 import { desktopMenuItems, toneBg } from "@/lib/nav";
+import { useAnalytics } from "@/components/analytics/analytics-provider";
 import { Sparkle } from "@/components/public/shapes";
 
 export function MenuOverlay({ onClose }: { onClose: () => void }) {
   const pathname = usePathname();
   const overlayRef = useRef<HTMLDivElement>(null);
+  const { track } = useAnalytics();
 
   useEffect(() => {
     const trigger = document.querySelector<HTMLButtonElement>("[data-menu-orb]");
@@ -66,7 +68,10 @@ export function MenuOverlay({ onClose }: { onClose: () => void }) {
               <Link
                 key={item.href}
                 href={item.href}
-                onClick={onClose}
+                onClick={() => {
+                  track("nav_item_click", { href: item.href, label: item.label });
+                  onClose();
+                }}
                 aria-current={active ? "page" : undefined}
                 className={cn(
                   "group flex items-center gap-4 rounded-2xl border-2 border-ink bg-surface px-5 py-3 shadow-[3px_3px_0_0_var(--ink)] transition-all",

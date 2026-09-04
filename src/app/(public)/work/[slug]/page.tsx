@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { Target } from "lucide-react";
 import { getPublishedProject, getPublishedProjects } from "@/lib/public-data";
 import { buildMetadata } from "@/lib/seo";
+import { TrackOnce } from "@/components/analytics/track-once";
 import { ToyButton } from "@/components/ui/button";
 import { ArtFrame } from "@/components/public/art";
 import { ProjectCard } from "@/components/public/project-card";
@@ -29,6 +30,7 @@ export default async function CaseStudyPage({ params }: { params: Promise<{ slug
 
   return (
     <>
+      <TrackOnce event="project_view" props={{ slug: project.slug }} />
       <section className="relative overflow-hidden">
         <div className="bg-grain absolute inset-0" />
         <div className="relative mx-auto max-w-5xl px-5 pb-12 pt-32 md:px-10 md:pt-36">

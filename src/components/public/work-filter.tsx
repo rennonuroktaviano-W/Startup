@@ -5,12 +5,18 @@ import { Search, RotateCcw } from "lucide-react";
 import { type Project, type ProjectType } from "@/lib/content";
 import { ProjectCard } from "@/components/public/project-card";
 import { EmptyState } from "@/components/ui/empty-state";
+import { useAnalytics } from "@/components/analytics/analytics-provider";
 import { cn } from "@/lib/utils";
 
 export function WorkFilter({ projects }: { projects: Project[] }) {
   const [query, setQuery] = useState("");
   const [service, setService] = useState<string>("all");
   const [type, setType] = useState<"all" | ProjectType>("all");
+  const { track } = useAnalytics();
+
+  const trackFilter = (key: string, value: string) => {
+    track("project_filter", { key, value });
+  };
 
   const serviceOptions = useMemo(
     () => Array.from(new Set(projects.flatMap((p) => p.services.map((s) => s.slug)))),
@@ -42,14 +48,20 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
           <input
             type="search"
             value={query}
-            onChange={(e) => setQuery(e.target.value)}
+            onChange={(e) => {
+              setQuery(e.target.value);
+              trackFilter("query", e.target.value);
+            }}
             placeholder="Cari judul atau ringkasan…"
             className="h-11 w-full rounded-full border-2 border-ink bg-surface pl-10 pr-4 text-sm font-medium text-ink placeholder:text-ink/40 focus-visible:outline-3 focus-visible:outline-purple"
           />
         </label>
         <select
           value={service}
-          onChange={(e) => setService(e.target.value)}
+          onChange={(e) => {
+            setService(e.target.value);
+            trackFilter("service", e.target.value);
+          }}
           aria-label="Filter berdasarkan layanan"
           className="h-11 rounded-full border-2 border-ink bg-surface px-4 text-sm font-semibold text-ink"
         >
@@ -62,7 +74,11 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
         </select>
         <select
           value={type}
-          onChange={(e) => setType(e.target.value as "all" | ProjectType)}
+          onChange={(e) => {
+            const v = e.target.value as "all" | ProjectType;
+            setType(v);
+            trackFilter("type", v);
+          }}
           aria-label="Filter berdasarkan status proyek"
           className="h-11 rounded-full border-2 border-ink bg-surface px-4 text-sm font-semibold text-ink"
         >

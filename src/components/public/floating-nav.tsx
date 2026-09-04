@@ -7,6 +7,7 @@ import { useReducedMotion } from "motion/react";
 import { PenLine } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { siteConfig } from "@/lib/site";
+import { useAnalytics } from "@/components/analytics/analytics-provider";
 import { MenuOverlay } from "@/components/public/menu-overlay";
 import { MobileDock } from "@/components/public/mobile-dock";
 
@@ -15,6 +16,7 @@ export function FloatingNav({ brandName = siteConfig.name }: { brandName?: strin
   const [ctaHidden, setCtaHidden] = useState(false);
   const pathname = usePathname();
   const reducedMotion = useReducedMotion();
+  const { track } = useAnalytics();
 
   useEffect(() => {
     if (menuOpen) {
@@ -78,7 +80,12 @@ export function FloatingNav({ brandName = siteConfig.name }: { brandName?: strin
         aria-haspopup="dialog"
         aria-expanded={menuOpen}
         aria-label={menuOpen ? "Tutup menu" : "Buka menu"}
-        onClick={() => setMenuOpen((v) => !v)}
+        onClick={() => {
+          setMenuOpen((v) => {
+            if (!v) track("nav_open");
+            return !v;
+          });
+        }}
         className={cn(
           "toy-surface fixed right-3 top-3 z-40 flex h-12 w-12 items-center justify-center rounded-full transition-transform md:right-5 md:top-5",
           menuOpen ? "rotate-90" : "hover:rotate-6",
@@ -94,6 +101,7 @@ export function FloatingNav({ brandName = siteConfig.name }: { brandName?: strin
       {!menuOpen && !ctaHidden && (
         <Link
           href="/contact"
+          onClick={() => track("primary_cta_click", { label: "floating_bubble" })}
           className="toy-surface group fixed bottom-5 right-5 z-40 hidden items-center gap-2 rounded-full py-2.5 pl-3 pr-5 transition-all hover:-translate-y-1 lg:flex"
         >
           <span className="flex h-8 w-8 items-center justify-center rounded-full border-2 border-ink bg-purple text-white transition-transform group-hover:rotate-[-8deg]">

@@ -1,6 +1,7 @@
 import { Mail, MessageCircle, Clock3 } from "lucide-react";
 import { whatsappLink } from "@/lib/site";
 import { getPublicSettings } from "@/lib/public-settings";
+import { TrackedLink } from "@/components/analytics/tracked-link";
 import { buildMetadata } from "@/lib/seo";
 import { SectionHeader } from "@/components/public/section-header";
 import { ProjectBriefForm } from "@/components/forms/project-brief";
@@ -42,7 +43,9 @@ export default async function ContactPage({
 
           <Reveal delay={0.1} className="lg:pt-10">
             <div className="space-y-4">
-              <a
+              <TrackedLink
+                event="whatsapp_click"
+                props={{ label: "contact_card" }}
                 href={whatsappLink("Halo KotakIde Studio, saya mau tanya-tanya soal proyek.", contact.whatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -55,7 +58,7 @@ export default async function ContactPage({
                   <span className="block text-sm font-bold text-ink">WhatsApp</span>
                   <span className="block text-sm text-ink/60">{contact.whatsappDisplay}</span>
                 </span>
-              </a>
+              </TrackedLink>
               <a
                 href={`mailto:${contact.email}`}
                 className="flex items-center gap-3 rounded-2xl border-2 border-ink bg-surface p-4 shadow-[3px_3px_0_0_var(--ink)] transition-transform hover:-translate-y-0.5"

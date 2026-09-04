@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Mail, MessageCircle, Instagram, Linkedin, Github, Globe } from "lucide-react";
 import { whatsappLink } from "@/lib/site";
 import { getPublicSettings } from "@/lib/public-settings";
-import { ToyButton } from "@/components/ui/button";
+import { TrackedButton } from "@/components/analytics/tracked-button";
 import { Sparkle, Squiggle } from "@/components/public/shapes";
 
 const socialIcons: Record<string, typeof Instagram> = {
@@ -44,12 +44,18 @@ export async function ClosingPlayground() {
         </p>
 
         <div className="mt-8 flex flex-wrap items-center justify-center gap-3">
-          <ToyButton href="/contact" size="lg">
+          <TrackedButton href="/contact" size="lg" event="primary_cta_click" props={{ label: "closing" }}>
             Isi Project Brief <Sparkle className="h-4 w-4" />
-          </ToyButton>
-          <ToyButton href={whatsappLink("Halo KotakIde Studio, saya mau konsultasi soal proyek.", contact.whatsapp)} variant="secondary" size="lg">
+          </TrackedButton>
+          <TrackedButton
+            href={whatsappLink("Halo KotakIde Studio, saya mau konsultasi soal proyek.", contact.whatsapp)}
+            variant="secondary"
+            size="lg"
+            event="whatsapp_click"
+            props={{ label: "closing" }}
+          >
             <MessageCircle className="h-4 w-4" /> WhatsApp
-          </ToyButton>
+          </TrackedButton>
         </div>
 
         <div className="mt-12 flex flex-col items-center gap-6 border-t-2 border-dashed border-ink/15 pt-8 sm:flex-row sm:justify-between">

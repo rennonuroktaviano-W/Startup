@@ -6,6 +6,7 @@ import { usePathname } from "next/navigation";
 import { AppWindow, Briefcase, Home as HomeIcon, LayoutGrid, MessageCircle, MoreHorizontal, X } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { mobileDockItems, mobileMoreItems, toneBg } from "@/lib/nav";
+import { useAnalytics } from "@/components/analytics/analytics-provider";
 
 const icons: Record<string, React.ReactNode> = {
   "/": <HomeIcon className="h-5 w-5" />,
@@ -18,6 +19,7 @@ export function MobileDock({ compact = false }: { compact?: boolean }) {
   const pathname = usePathname();
   const [sheetOpen, setSheetOpen] = useState(false);
   const sheetRef = useRef<HTMLDivElement>(null);
+  const { track } = useAnalytics();
 
   useEffect(() => {
     if (sheetOpen) {
@@ -80,6 +82,7 @@ export function MobileDock({ compact = false }: { compact?: boolean }) {
               key={item.href}
               href={item.href}
               aria-current={active ? "page" : undefined}
+              onClick={() => track("nav_item_click", { href: item.href, label: item.label })}
               className={cn(
                 "flex min-h-11 flex-1 flex-col items-center justify-center gap-0.5 rounded-2xl px-1 py-1.5 text-[10px] font-bold transition-colors",
                 active ? cn(toneBg[item.tone], "shadow-[2px_2px_0_0_var(--ink)]") : "text-ink/65 hover:bg-ink/5",
@@ -137,7 +140,10 @@ export function MobileDock({ compact = false }: { compact?: boolean }) {
                   <Link
                     key={item.href}
                     href={item.href}
-                    onClick={() => setSheetOpen(false)}
+                    onClick={() => {
+                      track("nav_item_click", { href: item.href, label: item.label });
+                      setSheetOpen(false);
+                    }}
                     aria-current={active ? "page" : undefined}
                     className={cn(
                       "flex min-h-11 items-center gap-3 rounded-xl border-2 border-ink bg-surface px-4 py-3 font-display text-lg font-semibold shadow-[2px_2px_0_0_var(--ink)]",
