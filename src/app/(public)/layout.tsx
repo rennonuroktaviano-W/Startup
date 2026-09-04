@@ -1,7 +1,6 @@
 import { Toaster } from "sonner";
 import { FloatingNav } from "@/components/public/floating-nav";
 import { ClosingPlayground } from "@/components/public/closing-playground";
-import { CustomCursor } from "@/components/public/custom-cursor";
 import { VisibilityPause } from "@/components/public/visibility-pause";
 import { PageTransition } from "@/components/motion/page-transition";
 import { AnalyticsProvider, PageViewTracker } from "@/components/analytics/analytics-provider";
@@ -25,7 +24,6 @@ export default async function PublicLayout({ children }: { children: React.React
         <main id="main">{children}</main>
       </PageTransition>
       <ClosingPlayground />
-      <CustomCursor />
       <VisibilityPause />
       <Toaster position="top-center" closeButton richColors />
     </AnalyticsProvider>

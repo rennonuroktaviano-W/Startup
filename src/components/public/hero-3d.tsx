@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useRef, useState, useSyncExternalStore } from "react";
+import { useCallback, useEffect, useRef, useState, useSyncExternalStore } from "react";
 import { motion, useReducedMotion } from "motion/react";
 import { Sparkle, Star, Burst, BrowserCard, Squiggle } from "@/components/public/shapes";
 import { cn } from "@/lib/utils";
@@ -9,6 +9,9 @@ const ORBIT_STYLES = [
   { inset: "22%", dir: "", dur: "18s" },
   { inset: "10%", dir: "reverse", dur: "24s" },
 ] as const;
+
+const SPIN_SPEED = 0.35;
+const LERP = 0.14;
 
 function subscribeToMedia(query: string, onStoreChange: () => void) {
   const mql = window.matchMedia(query);
@@ -43,38 +46,120 @@ export function Hero3D() {
   const fine = useMediaQuery("(pointer: fine)");
   const lowCap = useLowCapability();
   const stageRef = useRef<HTMLDivElement>(null);
-  const innerRef = useRef<HTMLDivElement>(null);
+  const cardRef = useRef<HTMLDivElement>(null);
 
-  const parallax = !reduced && fine && !lowCap;
+  const interactive = fine && !lowCap && !reduced;
+  const showDrag = interactive;
+
+  // Rotasi sumbu-Y (derajat). `target` digerakkan oleh drag/auto-spin,
+  // `current` di-lerp menuju `target` untuk transisi halus.
+  const targetRef = useRef(0);
+  const currentRef = useRef(0);
+  const draggingRef = useRef(false);
+  const pointerActiveRef = useRef(false);
+  const lastXRef = useRef<number | null>(null);
+  const [label, setLabel] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (!interactive) return;
+    const stage = stageRef.current;
+    if (!stage) return;
+
+    let raf = 0;
+
+    const tick = () => {
+      // Auto-spin lembut saat pointer tidak di atas & tidak sedang di-drag.
+      if (!pointerActiveRef.current && !draggingRef.current) {
+        targetRef.current += SPIN_SPEED;
+      }
+      currentRef.current += (targetRef.current - currentRef.current) * LERP;
+      const node = cardRef.current;
+      if (node) {
+        node.style.transform = `rotateY(${currentRef.current}deg)`;
+      }
+      raf = requestAnimationFrame(tick);
+    };
+    raf = requestAnimationFrame(tick);
+
+    return () => cancelAnimationFrame(raf);
+  }, [interactive]);
+
+  const onPointerDown = useCallback(
+    (e: React.PointerEvent) => {
+      if (!interactive) return;
+      draggingRef.current = true;
+      pointerActiveRef.current = true;
+      lastXRef.current = e.clientX;
+      e.currentTarget.setPointerCapture(e.pointerId);
+      // Smooth ease ke posisi saat menarik; berhenti dari auto-spin pada posisi ini.
+    },
+    [interactive],
+  );
 
   const onPointerMove = useCallback(
     (e: React.PointerEvent) => {
-      if (!parallax || !stageRef.current || !innerRef.current) return;
-      const rect = stageRef.current.getBoundingClientRect();
-      const nx = (e.clientX - rect.left) / rect.width - 0.5;
-      const ny = (e.clientY - rect.top) / rect.height - 0.5;
-      innerRef.current.style.transform = `translateZ(0) rotateY(${nx * 10}deg) rotateX(${-ny * 10}deg)`;
+      if (!interactive || !draggingRef.current || lastXRef.current === null) return;
+      const dx = e.clientX - lastXRef.current;
+      lastXRef.current = e.clientX;
+      targetRef.current += dx * 0.6;
     },
-    [parallax],
+    [interactive],
   );
 
-  const onPointerLeave = useCallback(() => {
-    if (innerRef.current) innerRef.current.style.transform = `translateZ(0) rotateY(0deg) rotateX(0deg)`;
-  }, []);
+  const onPointerUp = useCallback(
+    (e: React.PointerEvent) => {
+      if (!interactive) return;
+      draggingRef.current = false;
+      pointerActiveRef.current = false;
+      lastXRef.current = null;
+      try {
+        e.currentTarget.releasePointerCapture(e.pointerId);
+      } catch {
+        /* ignore */
+      }
+    },
+    [interactive],
+  );
 
-  const showDrag = !!fine && !reduced && !lowCap;
+  const onPointerEnter = useCallback(() => {
+    if (!interactive) return;
+    pointerActiveRef.current = true;
+  }, [interactive]);
+
+  const onPointerLeave = useCallback(() => {
+    if (!interactive) return;
+    pointerActiveRef.current = false;
+    draggingRef.current = false;
+    lastXRef.current = null;
+  }, [interactive]);
+
+  const onClickHint = useCallback(() => {
+    if (!interactive) return;
+    setLabel("Puter: seret ke kiri / kanan");
+    window.setTimeout(() => setLabel(null), 2200);
+  }, [interactive]);
 
   return (
     <div
       ref={stageRef}
-      onPointerMove={onPointerMove}
-      onPointerLeave={onPointerLeave}
-      className="relative mx-auto aspect-[4/3] w-full max-w-[560px] [perspective:1200px]"
+      className="relative mx-auto aspect-[4/3] w-full max-w-[560px] [perspective:1600px]"
       aria-hidden
     >
+      {/* Rotatable 3D stage */}
       <div
-        ref={innerRef}
-        className={cn("relative h-full w-full [transform-style:preserve-3d]", reduced && "transform-none")}
+        ref={cardRef}
+        onPointerDown={onPointerDown}
+        onPointerMove={onPointerMove}
+        onPointerUp={onPointerUp}
+        onPointerEnter={onPointerEnter}
+        onPointerLeave={onPointerLeave}
+        onClick={onClickHint}
+        className={cn(
+          "relative h-full w-full [transform-style:preserve-3d]",
+          showDrag && "cursor-grab touch-none active:cursor-grabbing",
+          reduced && "transform-none",
+        )}
+        style={{ willChange: "transform" }}
       >
         {/* Floating decorations */}
         <motion.div
@@ -131,7 +216,7 @@ export function Hero3D() {
         {/* Main browser as toy website */}
         <div
           className="absolute inset-[10%] animate-float [animation-delay:0.4s]"
-          style={{ transform: "translateZ(0px)" }}
+          style={{ transform: "translateZ(20px)" }}
         >
           <BrowserCard className="relative h-full w-full">
             <div className="relative h-[72%] p-4 sm:p-5">
@@ -175,15 +260,12 @@ export function Hero3D() {
           </div>
         </div>
 
-        {/* Floating cursor (draggable on desktop) */}
+        {/* Floating cursor (draggable sprite) */}
         <motion.div
           initial={reduced ? undefined : { opacity: 0, scale: 0 }}
           animate={reduced ? undefined : { opacity: 1, scale: 1 }}
           transition={{ duration: 0.4, delay: 0.9, type: "spring", stiffness: 200, damping: 15 }}
-          className={cn("absolute right-[14%] top-[14%] rotate-6 [transform:translateZ(80px)] text-ink", showDrag && "cursor-grab touch-none")}
-          drag={showDrag}
-          dragMomentum={false}
-          dragConstraints={stageRef}
+          className="absolute right-[14%] top-[14%] rotate-6 [transform:translateZ(80px)] text-ink"
         >
           <svg viewBox="0 0 24 24" className="h-6 w-6 drop-shadow-[2px_2px_0_var(--ink)]" fill="currentColor">
             <path d="M4 3l7 17 2.5-6.5L20 11 4 3z" stroke="var(--ink)" strokeWidth="1.4" strokeLinejoin="round" />
@@ -200,6 +282,16 @@ export function Hero3D() {
         {/* Wavy underline accent */}
         <div style={{ transform: "translateZ(70px)", transformOrigin: "center" }}>
           <Squiggle className="absolute -bottom-2 left-1/2 w-40 -translate-x-1/2 text-purple" />
+        </div>
+
+        {/* Drag hint */}
+        <div
+          className={cn(
+            "pointer-events-none absolute -bottom-6 left-1/2 -translate-x-1/2 whitespace-nowrap rounded-full border-2 border-ink bg-surface px-3 py-1 text-[10px] font-bold text-ink/60 transition-opacity duration-500",
+            interactive && label ? "opacity-100" : "opacity-0",
+          )}
+        >
+          {label ?? "Seret untuk memutar 360°"}
         </div>
       </div>
     </div>
