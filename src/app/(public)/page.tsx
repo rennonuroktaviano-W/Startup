@@ -20,7 +20,7 @@ import { FaqAccordion } from "@/components/public/faq-accordion";
 import { BeforeAfter } from "@/components/public/before-after";
 import { TestimonialsSection } from "@/components/public/testimonials-section";
 import { InsightPreview } from "@/components/public/insight-preview";
-import { HeroVisual, ScrollHint } from "@/components/public/hero-visual";
+import { Hero3D, ScrollHint } from "@/components/public/hero-3d";
 import { Reveal } from "@/components/motion/reveal";
 
 export const metadata = buildMetadata({
@@ -74,7 +74,7 @@ export default async function HomePage() {
             </div>
           </Reveal>
           <Reveal className="order-1 md:order-2" delay={0.1}>
-            <HeroVisual />
+            <Hero3D />
           </Reveal>
         </div>
         <ScrollHint />

@@ -7,6 +7,7 @@ import { getRequiredSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
 import { saveRevision } from "@/lib/revisions";
 import { upsertRedirect } from "@/lib/redirects";
+import { validateForPublish } from "@/features/publishing/validate";
 
 const projectSchema = z.object({
   id: z.string().cuid().optional(),
@@ -101,7 +102,15 @@ export async function deleteProject(id: string) {
 export async function togglePublishProject(id: string, status: "DRAFT" | "PUBLISHED") {
   const session = await getRequiredSession();
   requireCapability(session.user.role, "content:publish");
+  const record = await prisma.project.findUnique({ where: { id } });
+  if (!record) return { ok: false as const, message: "Proyek tidak ditemukan." };
+  if (status === "PUBLISHED") {
+    const issues = validateForPublish(record, ["title", "slug", "summary", "metaTitle"]);
+    if (issues.length > 0) {
+      return { ok: false as const, message: "Belum bisa diterbitkan: " + issues.map((i) => i.field).join(", ") + " belum lengkap." };
+    }
+  }
   const updated = await prisma.project.update({ where: { id }, data: { status } });
   await logAudit({ actorId: session.user.id, action: "publish", entityType: "Project", entityId: id, summary: { status } });
-  return { ok: true, status: updated.status };
+  return { ok: true as const, status: updated.status };
 }

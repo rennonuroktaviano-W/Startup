@@ -7,6 +7,7 @@ import { getRequiredSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
 import { saveRevision } from "@/lib/revisions";
 import { upsertRedirect } from "@/lib/redirects";
+import { validateForPublish } from "@/features/publishing/validate";
 
 const serviceSchema = z.object({
   id: z.string().cuid().optional(),
@@ -85,7 +86,15 @@ export async function deleteService(id: string) {
 export async function togglePublishService(id: string, status: "DRAFT" | "PUBLISHED") {
   const session = await getRequiredSession();
   requireCapability(session.user.role, "content:publish");
+  const record = await prisma.service.findUnique({ where: { id } });
+  if (!record) return { ok: false as const, message: "Layanan tidak ditemukan." };
+  if (status === "PUBLISHED") {
+    const issues = validateForPublish(record, ["name", "slug", "shortDescription", "metaTitle"]);
+    if (issues.length > 0) {
+      return { ok: false as const, message: "Belum bisa diterbitkan: " + issues.map((i) => i.field).join(", ") + " belum lengkap." };
+    }
+  }
   const updated = await prisma.service.update({ where: { id }, data: { status } });
   await logAudit({ actorId: session.user.id, action: "publish", entityType: "Service", entityId: id, summary: { status } });
-  return { ok: true, status: updated.status };
+  return { ok: true as const, status: updated.status };
 }

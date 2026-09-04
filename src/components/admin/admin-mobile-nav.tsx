@@ -24,6 +24,7 @@ import {
   Archive,
   Tag,
   FolderTree,
+  Bell,
   type LucideIcon,
 } from "lucide-react";
 import type { SessionUser } from "@/lib/auth/session";
@@ -59,6 +60,7 @@ const ICONS: Record<string, LucideIcon> = {
   archive: Archive,
   folderTree: FolderTree,
   tag: Tag,
+  bell: Bell,
 };
 
 export function AdminMobileNav({

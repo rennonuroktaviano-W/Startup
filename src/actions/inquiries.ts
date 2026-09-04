@@ -5,7 +5,8 @@ import { prisma } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { getRequiredSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
-import { sendMail, adminNotificationEmails } from "@/lib/mail";
+import { sendMail } from "@/lib/mail";
+import { notifyAdmins } from "@/actions/notifications";
 import { rateLimit } from "@/lib/rate-limit";
 
 const siteUrl = process.env.NEXT_PUBLIC_SITE_URL ?? "http://localhost:3000";
@@ -168,15 +169,12 @@ async function notifyInquiryCreated(
     html: `<p>Halo <strong>${name}</strong>,</p><p>Terima kasih sudah bercerita tentang proyek <strong>${service}</strong> kamu.</p><p>Nomor referensi kamu: <strong>${referenceNumber}</strong></p><p>Kami akan menindaklanjuti permintaanmu. Butuh lebih cepat? Balas email ini.</p><p>— ${siteName}</p>`,
   });
 
-  const recipients = adminNotificationEmails();
-  if (recipients.length) {
-    await sendMail({
-      to: recipients.join(","),
-      subject: `[${siteName}] Project brief baru: ${name}`,
-      text: `Brief baru ${referenceNumber}\nNama: ${name}\nLayanan: ${service}\nDeskripsi: ${description}\n\nBuka di ${siteUrl}/admin/leads`,
-      html: `<p><strong>Project brief baru</strong> (${referenceNumber})</p><p><strong>Nama:</strong> ${name}</p><p><strong>Layanan:</strong> ${service}</p><p><strong>Deskripsi:</strong> ${description}</p><p><a href="${siteUrl}/admin/leads">Buka di CMS</a></p>`,
-    });
-  }
+  void notifyAdmins(
+    "inquiry.new",
+    `[${siteName}] Project brief baru: ${name}`,
+    `Brief baru ${referenceNumber}\nNama: ${name}\nLayanan: ${service}\nDeskripsi: ${description}\n\nBuka di ${siteUrl}/admin/leads`,
+    `<p><strong>Project brief baru</strong> (${referenceNumber})</p><p><strong>Nama:</strong> ${name}</p><p><strong>Layanan:</strong> ${service}</p><p><strong>Deskripsi:</strong> ${description}</p><p><a href="${siteUrl}/admin/leads">Buka di CMS</a></p>`,
+  ).catch(() => {});
 }
 
 export type LeadActionResult = { ok: true; message?: string } | { ok: false; message: string };
@@ -213,6 +211,12 @@ export async function setLeadStatus(id: string, status: (typeof LEAD_STATUSES)[n
     },
   });
   await logAudit({ actorId: session.user.id, action: "update", entityType: "Inquiry", entityId: id, summary: { from: inquiry.status, to: status } });
+  void notifyAdmins(
+    "inquiry.status_change",
+    `[${siteName}] Status prospek ${inquiry.referenceNumber} → ${status}`,
+    `Prospek ${inquiry.name} (${inquiry.referenceNumber}) berubah status dari ${inquiry.status} menjadi ${status} oleh ${session.user.name}.\n\nBuka di ${siteUrl}/admin/leads/${id}`,
+    `<p>Prospek <strong>${inquiry.name}</strong> (${inquiry.referenceNumber}) berubah status dari ${inquiry.status} menjadi <strong>${status}</strong> oleh ${session.user.name}.</p><p><a href="${siteUrl}/admin/leads/${id}">Buka di CMS</a></p>`,
+  ).catch(() => {});
   return { ok: true as const };
 }
 
@@ -224,16 +228,26 @@ export async function markLeadRead(id: string, isRead: boolean) {
 
 export async function assignLead(id: string, assigneeId: string | null) {
   const session = await authLeadWrite();
+  const inquiry = await prisma.inquiry.findUnique({ where: { id }, include: { assignee: { select: { name: true } } } });
+  if (!inquiry) return { ok: false as const, message: "Prospek tidak ditemukan." };
+  const assignee = assigneeId ? await prisma.user.findUnique({ where: { id: assigneeId }, select: { name: true } }) : null;
   await prisma.inquiry.update({
     where: { id },
     data: {
       assigneeId,
       activities: {
-        create: { actorId: session.user.id, action: "assign", metadataJson: { assigneeId } },
+        create: { actorId: session.user.id, action: "assign", metadataJson: { assigneeId, assigneeName: assignee?.name ?? null } },
       },
     },
   });
   await logAudit({ actorId: session.user.id, action: "update", entityType: "Inquiry", entityId: id, summary: { assigneeId } });
+  const target = assignee?.name ?? "tidak ada staf";
+  void notifyAdmins(
+    "inquiry.assignment",
+    `[${siteName}] Prospek ditugaskan ke ${target}`,
+    `Prospek ${inquiry.name} (${inquiry.referenceNumber}) sekarang ditugaskan ke ${target} oleh ${session.user.name}.\n\nBuka di ${siteUrl}/admin/leads/${id}`,
+    `<p>Prospek <strong>${inquiry.name}</strong> (${inquiry.referenceNumber}) sekarang ditugaskan ke <strong>${target}</strong> oleh ${session.user.name}.</p><p><a href="${siteUrl}/admin/leads/${id}">Buka di CMS</a></p>`,
+  ).catch(() => {});
   return { ok: true as const };
 }
 

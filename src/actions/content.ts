@@ -7,6 +7,7 @@ import { getRequiredSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
 import { saveRevision } from "@/lib/revisions";
 import { upsertRedirect } from "@/lib/redirects";
+import { validateForPublish } from "@/features/publishing/validate";
 
 // --- BLOG POST ---
 
@@ -92,9 +93,17 @@ export async function deleteBlogPost(id: string) {
 export async function togglePublishBlogPost(id: string, status: "DRAFT" | "PUBLISHED") {
   const session = await getRequiredSession();
   requireCapability(session.user.role, "content:publish");
+  const record = await prisma.blogPost.findUnique({ where: { id } });
+  if (!record) return { ok: false as const, message: "Artikel tidak ditemukan." };
+  if (status === "PUBLISHED") {
+    const issues = validateForPublish(record, ["title", "slug", "excerpt", "bodyJson", "metaTitle"]);
+    if (issues.length > 0) {
+      return { ok: false as const, message: "Belum bisa diterbitkan: " + issues.map((i) => i.field).join(", ") + " belum lengkap." };
+    }
+  }
   const updated = await prisma.blogPost.update({ where: { id }, data: { status } });
   await logAudit({ actorId: session.user.id, action: "publish", entityType: "BlogPost", entityId: id, summary: { status } });
-  return { ok: true, status: updated.status };
+  return { ok: true as const, status: updated.status };
 }
 
 // --- FAQ ---

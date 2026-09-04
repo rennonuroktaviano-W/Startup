@@ -9,6 +9,21 @@ jobs:
   lint-test-build:
     name: Typecheck, Lint, Test, Build
     runs-on: ubuntu-latest
+    services:
+      mysql:
+        image: mysql:8
+        env:
+          MYSQL_ROOT_PASSWORD: root
+          MYSQL_DATABASE: kotakide_ci
+          MYSQL_USER: ci
+          MYSQL_PASSWORD: ci
+        ports:
+          - "3306:3306"
+        options: >-
+          --health-cmd="mysqladmin ping -h 127.0.0.1 -uroot -proot"
+          --health-interval=10s
+          --health-timeout=5s
+          --health-retries=10
     env:
       CI: "true"
     steps:
@@ -32,6 +47,14 @@ jobs:
 
       - name: Unit tests
         run: npm run test
+
+      - name: Generate Prisma client
+        run: npm run db:generate
+
+      - name: Apply migrations
+        run: npx prisma migrate deploy
+        env:
+          DATABASE_URL: "mysql://ci:ci@127.0.0.1:3306/kotakide_ci"
 
       - name: Production build
         run: npm run build

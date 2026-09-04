@@ -2,6 +2,9 @@
 
 import { useState } from "react";
 import { Eye, EyeOff, LoaderCircle } from "lucide-react";
+import { showToast } from "@/components/ui/toast";
+
+type PublishResult = { ok: boolean; status?: string; message?: string };
 
 export function TogglePublish({
   id,
@@ -22,7 +25,7 @@ export function TogglePublish({
     setLoading(true);
     const newStatus: "DRAFT" | "PUBLISHED" = current === "PUBLISHED" ? "DRAFT" : "PUBLISHED";
     try {
-      let res: { ok: boolean; status: string } | undefined;
+      let res: PublishResult | undefined;
       if (entityType === "Service") {
         const { togglePublishService } = await import("@/actions/services");
         res = await togglePublishService(id, newStatus);
@@ -33,9 +36,19 @@ export function TogglePublish({
         const { togglePublishBlogPost } = await import("@/actions/content");
         res = await togglePublishBlogPost(id, newStatus);
       }
-      if (res?.ok) {
+      if (res?.ok && res.status) {
         setCurrent(res.status);
         onToggle?.(id, res.status as "DRAFT" | "PUBLISHED");
+        showToast({
+          title: res.status === "PUBLISHED" ? "Diterbitkan" : "Dijadikan draft",
+          variant: "success",
+        });
+      } else {
+        showToast({
+          title: "Gagal diterbitkan",
+          description: res?.message ?? "Terjadi kesalahan.",
+          variant: "error",
+        });
       }
     } finally {
       setLoading(false);

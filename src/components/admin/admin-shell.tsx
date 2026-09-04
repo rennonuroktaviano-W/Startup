@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { LayoutDashboard, LogOut, FileText, FolderKanban, Newspaper, HelpCircle, Users, Image as ImageIcon, Settings, Navigation, MessageSquareQuote, Inbox, ScrollText, UserCog, LayoutTemplate, SearchCheck, Palette, Archive, Tag, FolderTree } from "lucide-react";
+import { LayoutDashboard, LogOut, FileText, FolderKanban, Newspaper, HelpCircle, Users, Image as ImageIcon, Settings, Navigation, MessageSquareQuote, Inbox, ScrollText, UserCog, LayoutTemplate, SearchCheck, Palette, Archive, Tag, FolderTree, Bell } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import type { SessionUser } from "@/lib/auth/session";
 import { logout } from "@/actions/auth";
@@ -52,6 +52,7 @@ const navItems: AdminNavGroup = [
       { label: "Backup", href: "/admin/backups", icon: Archive, iconKey: "archive", capability: "audit:read" },
       { label: "Navigasi", href: "/admin/navigation", icon: Navigation, iconKey: "navigation" },
       { label: "Pengaturan", href: "/admin/settings", icon: Settings, iconKey: "settings" },
+      { label: "Notifikasi", href: "/admin/notifications", icon: Bell, iconKey: "bell", capability: "settings:write" },
     ],
   },
   {
