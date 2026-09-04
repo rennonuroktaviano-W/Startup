@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getRequiredSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
 import { logAudit } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 import { LEAD_STATUS_META, parseScopeJson, parseAssetsJson } from "@/lib/leads";
 
 export const dynamic = "force-dynamic";
@@ -10,6 +11,11 @@ export const dynamic = "force-dynamic";
 export async function GET(request: Request) {
   const session = await getRequiredSession();
   requireCapability(session.user.role, "leads:export");
+
+  const rl = await rateLimit({ key: "leads-export", limit: 20, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Terlalu banyak export. Coba lagi sebentar." }, { status: 429 });
+  }
 
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status");

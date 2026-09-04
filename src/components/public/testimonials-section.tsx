@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Quote } from "lucide-react";
 import { SectionHeader } from "@/components/public/section-header";
 import { Reveal } from "@/components/motion/reveal";
@@ -34,10 +35,11 @@ export function TestimonialsSection({ items }: { items: PublicTestimonial[] }) {
                 <blockquote className="mt-3 text-[15px] leading-relaxed text-ink/80">“{t.quote}”</blockquote>
                 <figcaption className="mt-auto flex items-center gap-3 pt-5">
                   {t.avatarUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={t.avatarUrl}
                       alt={`Foto ${t.personName}`}
+                      width={44}
+                      height={44}
                       className="h-11 w-11 rounded-full border-2 border-ink object-cover"
                     />
                   ) : (

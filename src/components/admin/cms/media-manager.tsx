@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useRef } from "react";
+import Image from "next/image";
 import { LoaderCircle, RefreshCw, FileImage, Trash2 } from "lucide-react";
 import { FilePicker, FilePickerValue } from "@/components/admin/cms/file-picker";
 import { deleteMedia } from "@/actions/media";
@@ -103,10 +104,15 @@ export function MediaManager() {
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {items.map((item) => (
             <div key={item.id} className="group relative overflow-hidden rounded-xl border-2 border-ink bg-surface p-1">
-              <div className="flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-ink/5">
+              <div className="relative flex aspect-square items-center justify-center overflow-hidden rounded-lg bg-ink/5">
                 {item.url.match(/\.(jpg|jpeg|png|gif|webp|svg|avif)$/i) ? (
-                  // eslint-disable-next-line @next/next/no-img-element
-                  <img src={item.url} alt={item.altText ?? item.name} className="h-full w-full object-cover" />
+                  <Image
+                    src={item.url}
+                    alt={item.altText ?? item.name}
+                    fill
+                    sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 20vw"
+                    className="object-cover"
+                  />
                 ) : (
                   <FileImage className="h-8 w-8 text-ink/20" />
                 )}

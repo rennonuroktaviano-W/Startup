@@ -9,6 +9,8 @@ import { TrackOnce } from "@/components/analytics/track-once";
 import { ToyButton } from "@/components/ui/button";
 import { FaqAccordion } from "@/components/public/faq-accordion";
 import { Reveal } from "@/components/motion/reveal";
+import { JsonLd } from "@/components/seo/json-ld";
+import { serviceJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -31,6 +33,8 @@ export default async function ServiceDetailPage({ params }: { params: Promise<{ 
 
   return (
     <>
+      <JsonLd data={serviceJsonLd({ name: service.name, description: service.shortDescription, slug: service.slug })} />
+      <JsonLd data={breadcrumbJsonLd([{ name: "Services", path: "/services" }, { name: service.name, path: `/services/${service.slug}` }])} />
       <TrackOnce event="service_view" props={{ slug: service.slug }} />
       <section className="relative overflow-hidden">
         <div className="bg-grain absolute inset-0" />

@@ -2,6 +2,9 @@ import { siteConfig } from "@/lib/site";
 
 const abs = (path: string) => `${siteConfig.siteUrl}${path}`;
 
+/** Konversi path relatif atau absolut menjadi URL absolut berbasis siteUrl. */
+const toAbs = (value: string) => (/^https?:\/\//.test(value) ? value : abs(value));
+
 type BreadcrumbItem = { name: string; path: string };
 
 export function organizationJsonLd(opts?: { email?: string; sameAs?: string[] }) {
@@ -43,7 +46,7 @@ export function serviceJsonLd(opts: {
     description: opts.description,
     url: abs(`/services/${opts.slug}`),
     serviceType: opts.serviceType ?? opts.name,
-    ...(opts.image ? { image: abs(opts.image) } : {}),
+    ...(opts.image ? { image: toAbs(opts.image) } : {}),
     provider: { "@type": "Organization", name: siteConfig.name, url: siteConfig.siteUrl },
   };
 }
@@ -62,7 +65,7 @@ export function articleJsonLd(opts: {
     mainEntityOfPage: { "@type": "WebPage", "@id": abs(`/insights/${opts.slug}`) },
     headline: opts.title,
     description: opts.description,
-    image: abs(opts.image ?? "/brand/og-default.png"),
+    image: opts.image ? toAbs(opts.image) : abs("/brand/og-default.png"),
     datePublished: opts.publishedAt,
     author: { "@type": "Person", name: opts.authorName ?? siteConfig.name },
     publisher: { "@type": "Organization", name: siteConfig.name },

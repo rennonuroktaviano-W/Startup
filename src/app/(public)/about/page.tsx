@@ -1,3 +1,4 @@
+import Image from "next/image";
 import { Sparkle, Rocket, HandHeart, Focus, Github, Linkedin, Globe } from "lucide-react";
 import { siteConfig } from "@/lib/site";
 import { buildMetadata } from "@/lib/seo";
@@ -135,12 +136,12 @@ export default async function AboutPage() {
               <Reveal key={m.id} delay={Math.min(i, 3) * 0.05}>
                 <div className="flex h-full flex-col rounded-2xl border-2 border-ink bg-surface p-6 shadow-[4px_4px_0_0_var(--ink)]">
                   {m.photoUrl ? (
-                    // eslint-disable-next-line @next/next/no-img-element
-                    <img
+                    <Image
                       src={m.photoUrl}
                       alt={m.name}
+                      width={64}
+                      height={64}
                       className="h-16 w-16 rounded-2xl border-2 border-ink bg-ink/10 object-cover"
-                      loading="lazy"
                     />
                   ) : (
                     <span className="flex h-16 w-16 items-center justify-center rounded-2xl border-2 border-ink bg-lemon font-display text-2xl font-bold">

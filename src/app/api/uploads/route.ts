@@ -5,6 +5,7 @@ import { randomBytes } from "node:crypto";
 import { getSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
 import { logAudit } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 import { prisma } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
@@ -44,6 +45,11 @@ export async function POST(request: Request) {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   requireCapability(session.user.role, "media:write");
+
+  const rl = await rateLimit({ key: "media-upload", limit: 30, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Terlalu banyak upload. Coba lagi sebentar." }, { status: 429 });
+  }
 
   const formData = await request.formData();
   const file = formData.get("file");

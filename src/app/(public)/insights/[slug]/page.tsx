@@ -4,6 +4,8 @@ import { getPublishedArticle } from "@/lib/content-articles";
 import { buildMetadata } from "@/lib/seo";
 import { RichText } from "@/components/public/rich-text";
 import { Reveal } from "@/components/motion/reveal";
+import { JsonLd } from "@/components/seo/json-ld";
+import { articleJsonLd, breadcrumbJsonLd } from "@/lib/json-ld";
 
 export async function generateMetadata({ params }: { params: Promise<{ slug: string }> }) {
   const { slug } = await params;
@@ -27,6 +29,8 @@ export default async function ArticlePage({ params }: { params: Promise<{ slug: 
 
   return (
     <>
+      <JsonLd data={articleJsonLd({ title: article.title, description: article.excerpt, slug, publishedAt: article.publishedAt, image: article.coverUrl, authorName: article.authorName })} />
+      <JsonLd data={breadcrumbJsonLd([{ name: "Insights", path: "/insights" }, { name: article.title, path: `/insights/${slug}` }])} />
       <section className="relative overflow-hidden">
         <div className="bg-grain absolute inset-0" />
         <div className="relative mx-auto max-w-3xl px-5 pb-10 pt-32 md:px-10 md:pt-40">

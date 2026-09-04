@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight, BookOpen } from "lucide-react";
 import { SectionHeader } from "@/components/public/section-header";
@@ -40,11 +41,13 @@ export function InsightPreview({ items }: { items: ArticleSummary[] }) {
               className="group flex h-full flex-col gap-3 rounded-2xl border-2 border-ink bg-surface p-5 shadow-[4px_4px_0_0_var(--ink)] transition-transform duration-200 hover:-translate-y-1 hover:shadow-[6px_6px_0_0_var(--ink)]"
             >
               {post.coverUrl ? (
-                // eslint-disable-next-line @next/next/no-img-element
-                <img
+                <Image
                   src={post.coverUrl}
                   alt={post.title}
+                  width={400}
+                  height={200}
                   className="h-36 w-full rounded-xl border-2 border-ink object-cover"
+                  sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 33vw"
                 />
               ) : (
                 <div className="flex h-36 w-full items-center justify-center rounded-xl border-2 border-ink bg-purple/10">

@@ -3,6 +3,7 @@ import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth/session";
 import { requireCapability } from "@/lib/permissions";
 import { logAudit } from "@/lib/audit";
+import { rateLimit } from "@/lib/rate-limit";
 
 export const dynamic = "force-dynamic";
 
@@ -10,6 +11,11 @@ export async function GET() {
   const session = await getSession();
   if (!session) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   requireCapability(session.user.role, "audit:read");
+
+  const rl = await rateLimit({ key: "backup-export", limit: 10, windowMs: 60_000 });
+  if (!rl.allowed) {
+    return NextResponse.json({ error: "Terlalu banyak export. Coba lagi sebentar." }, { status: 429 });
+  }
 
   const snapshot: Record<string, unknown> = {
     exportedAt: new Date().toISOString(),

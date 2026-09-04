@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useRef } from "react";
+import Image from "next/image";
 import { Upload, X, FileImage } from "lucide-react";
 
 export type FilePickerValue = { id: string; url: string; name: string } | null;
@@ -38,8 +39,13 @@ export function FilePicker({
       {value ? (
         <div className="relative flex h-16 w-16 items-center justify-center overflow-hidden rounded-xl border-2 border-ink bg-surface">
           {value.url.match(/\.(jpg|jpeg|png|gif|webp|svg|avif)$/i) ? (
-            // eslint-disable-next-line @next/next/no-img-element
-            <img src={value.url} alt={value.name} className="h-full w-full object-cover" />
+            <Image
+              src={value.url}
+              alt={value.name}
+              fill
+              sizes="64px"
+              className="object-cover"
+            />
           ) : (
             <FileImage className="h-6 w-6 text-ink/30" />
           )}
