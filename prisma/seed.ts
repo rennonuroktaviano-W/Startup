@@ -50,11 +50,13 @@ async function seedSettings() {
       isPublic: true,
     },
     {
-      key: "social.links",
+      key: "contact.social",
       group: "contact",
-      valueJson: [{ platforms: [], note: "Isi melalui CMS Settings > Contact" }],
-      isPublic: false,
+      valueJson: [],
+      isPublic: true,
     },
+    { key: "contact.address", group: "contact", valueJson: "", isPublic: true },
+    { key: "contact.business_hours", group: "contact", valueJson: "", isPublic: true },
   ];
 
   for (const s of settings) {

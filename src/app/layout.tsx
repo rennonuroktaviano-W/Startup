@@ -44,16 +44,6 @@ export async function generateMetadata(): Promise<Metadata> {
   };
 }
 
-const organizationJsonLd = {
-  "@context": "https://schema.org",
-  "@type": "Organization",
-  name: siteName,
-  url: siteConfig.siteUrl,
-  email: siteConfig.email,
-  description: siteConfig.description,
-  sameAs: [`https://wa.me/${siteConfig.whatsapp}`],
-};
-
 export default async function RootLayout({ children }: { children: React.ReactNode }) {
   const settings = await getPublicSettings();
   const themeCss = themeVariables(settings.theme);
@@ -68,6 +58,16 @@ export default async function RootLayout({ children }: { children: React.ReactNo
   ]
     .filter(Boolean)
     .join(" ");
+
+  const organizationJsonLd = {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    name: settings.brand.name,
+    url: siteConfig.siteUrl,
+    email: settings.contact.email,
+    description: settings.brand.description,
+    sameAs: [`https://wa.me/${settings.contact.whatsapp}`, ...settings.contact.social.map((s) => s.url)],
+  };
 
   return (
     <html lang="id" className={htmlClass}>

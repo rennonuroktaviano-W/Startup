@@ -13,5 +13,5 @@ export const siteConfig = {
     "Dari ide kecil jadi produk digital yang enak dipakai. Website, web app, dan dashboard yang hidup dan mudah dikelola.",
 } as const;
 
-export const whatsappLink = (message?: string) =>
-  `https://wa.me/${siteConfig.whatsapp}${message ? `?text=${encodeURIComponent(message)}` : ""}`;
+export const whatsappLink = (message?: string, number?: string) =>
+  `https://wa.me/${number ?? siteConfig.whatsapp}${message ? `?text=${encodeURIComponent(message)}` : ""}`;

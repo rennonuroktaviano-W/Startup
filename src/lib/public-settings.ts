@@ -35,7 +35,27 @@ export async function getPublicSettings() {
     return /^#([0-9a-fA-F]{3}|[0-9a-fA-F]{6})$/.test(v.trim()) ? v : fallback;
   };
 
+  const social: { platform: string; url: string }[] = Array.isArray(raw["contact.social"])
+    ? (raw["contact.social"] as { platform: string; url: string }[]).filter(
+        (s) => s && typeof s.url === "string" && s.url.length > 0,
+      )
+    : [];
+
   return {
+    brand: {
+      name: stringOr("app.name", siteConfig.name),
+      tagline: stringOr("app.tagline", siteConfig.tagline),
+      description: stringOr("app.description", siteConfig.defaultOgDescription),
+    },
+    contact: {
+      email: stringOr("contact.email", siteConfig.email),
+      whatsapp: stringOr("contact.whatsapp", siteConfig.whatsapp),
+      whatsappDisplay: stringOr("contact.whatsapp_display", siteConfig.whatsappDisplay),
+      responseTime: stringOr("contact.response_time", siteConfig.responseTime),
+      address: stringOr("contact.address", ""),
+      businessHours: stringOr("contact.business_hours", ""),
+      social,
+    },
     seoTitle: stringOr("seo.title", `${siteConfig.name} — Studio Website & Aplikasi`),
     seoDescription: stringOr("seo.description", siteConfig.defaultOgDescription),
     seoOgImage: stringOr("seo.og_image", "/brand/og-default.png"),

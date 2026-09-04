@@ -1,15 +1,27 @@
 import Link from "next/link";
-import { Mail, MessageCircle, Instagram, Linkedin } from "lucide-react";
-import { siteConfig, whatsappLink } from "@/lib/site";
+import { Mail, MessageCircle, Instagram, Linkedin, Github, Globe } from "lucide-react";
+import { whatsappLink } from "@/lib/site";
+import { getPublicSettings } from "@/lib/public-settings";
 import { ToyButton } from "@/components/ui/button";
 import { Sparkle, Squiggle } from "@/components/public/shapes";
 
-const socials = [
-  { label: "Instagram", href: "https://instagram.com/", Icon: Instagram },
-  { label: "LinkedIn", href: "https://linkedin.com/", Icon: Linkedin },
-];
+const socialIcons: Record<string, typeof Instagram> = {
+  instagram: Instagram,
+  linkedin: Linkedin,
+  github: Github,
+  website: Globe,
+};
 
-export function ClosingPlayground() {
+const socialLabels: Record<string, string> = {
+  instagram: "Instagram",
+  linkedin: "LinkedIn",
+  github: "GitHub",
+  website: "Website",
+};
+
+export async function ClosingPlayground() {
+  const settings = await getPublicSettings();
+  const { contact, brand } = settings;
   return (
     <section aria-label="Mulai proyek" className="relative overflow-hidden">
       <div className="bg-grain absolute inset-0" />
@@ -35,30 +47,35 @@ export function ClosingPlayground() {
           <ToyButton href="/contact" size="lg">
             Isi Project Brief <Sparkle className="h-4 w-4" />
           </ToyButton>
-          <ToyButton href={whatsappLink("Halo KotakIde Studio, saya mau konsultasi soal proyek.")} variant="secondary" size="lg">
+          <ToyButton href={whatsappLink("Halo KotakIde Studio, saya mau konsultasi soal proyek.", contact.whatsapp)} variant="secondary" size="lg">
             <MessageCircle className="h-4 w-4" /> WhatsApp
           </ToyButton>
         </div>
 
         <div className="mt-12 flex flex-col items-center gap-6 border-t-2 border-dashed border-ink/15 pt-8 sm:flex-row sm:justify-between">
           <div className="flex items-center gap-3 text-sm text-ink/70">
-            <a href={`mailto:${siteConfig.email}`} className="flex items-center gap-1.5 underline decoration-purple decoration-2 underline-offset-4 hover:text-purple">
-              <Mail className="h-4 w-4" /> {siteConfig.email}
+            <a href={`mailto:${contact.email}`} className="flex items-center gap-1.5 underline decoration-purple decoration-2 underline-offset-4 hover:text-purple">
+              <Mail className="h-4 w-4" /> {contact.email}
             </a>
           </div>
           <div className="flex items-center gap-4 text-sm text-ink/70">
-            {socials.map(({ label, href, Icon }) => (
-              <a
-                key={label}
-                href={href}
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label={label}
-                className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink/20 transition-colors hover:border-ink hover:bg-lemon"
-              >
-                <Icon className="h-4 w-4" />
-              </a>
-            ))}
+            {contact.social.map(({ platform, url }) => {
+              const key = platform.toLowerCase();
+              const Icon = socialIcons[key] ?? Globe;
+              return (
+                <a
+                  key={platform}
+                  href={url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label={socialLabels[key] ?? platform}
+                  title={socialLabels[key] ?? platform}
+                  className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink/20 transition-colors hover:border-ink hover:bg-lemon"
+                >
+                  <Icon className="h-4 w-4" />
+                </a>
+              );
+            })}
           </div>
           <div className="flex items-center gap-4 text-sm text-ink/70">
             <Link href="/privacy" className="underline decoration-ink/40 underline-offset-4 hover:text-purple">
@@ -71,7 +88,7 @@ export function ClosingPlayground() {
         </div>
 
         <p className="mt-8 text-sm text-ink/50">
-          © {new Date().getFullYear()} {siteConfig.name}. Dibuat dengan banyak kopi & rasa penasaran.
+          © {new Date().getFullYear()} {brand.name}. Dibuat dengan banyak kopi & rasa penasaran.
         </p>
       </div>
     </section>

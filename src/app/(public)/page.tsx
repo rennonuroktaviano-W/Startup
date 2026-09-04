@@ -1,5 +1,6 @@
 import { Sparkle } from "lucide-react";
 import { siteConfig } from "@/lib/site";
+import { getPublicSettings } from "@/lib/public-settings";
 import { principles } from "@/lib/content";
 import {
   getPublishedServices,
@@ -28,7 +29,8 @@ export const metadata = buildMetadata({
 });
 
 export default async function HomePage() {
-  const [services, homeFaqs, projects, testimonials, metrics, articles] = await Promise.all([
+  const [settings, services, homeFaqs, projects, testimonials, metrics, articles] = await Promise.all([
+    getPublicSettings(),
     getPublishedServices(),
     getPublishedFaqs(),
     getPublishedProjects(),
@@ -36,6 +38,7 @@ export default async function HomePage() {
     getPublicMetrics(),
     getPublishedArticles(),
   ]);
+  const { brand, contact } = settings;
   const featured = projects.slice(0, 3);
   const hasWork = featured.length > 0;
   const hasServices = services.length > 0;
@@ -47,7 +50,7 @@ export default async function HomePage() {
         <div className="bg-grain absolute inset-0" />
         <div className="relative mx-auto grid max-w-6xl gap-10 px-5 pb-10 pt-28 md:grid-cols-[1.1fr_1fr] md:items-center md:px-10 md:pb-16 md:pt-36">
           <Reveal className="order-2 md:order-1">
-            <p className="toy-sticker -rotate-1 bg-sky">{siteConfig.tagline}</p>
+            <p className="toy-sticker -rotate-1 bg-sky">{brand.tagline}</p>
             <h1 className="mt-5 font-display text-[2.4rem] font-semibold leading-[1.06] text-ink sm:text-5xl md:text-[3.4rem]">
               Dari ide kecil jadi{" "}
               <span className="relative inline-block text-purple">
@@ -59,7 +62,7 @@ export default async function HomePage() {
               yang enak dipakai.
             </h1>
             <p className="mt-6 max-w-lg text-base leading-relaxed text-ink/70 sm:text-lg">
-              {siteConfig.description}
+              {brand.description}
             </p>
             <div className="mt-8 flex flex-wrap items-center gap-3">
               <ToyButton href="/contact" size="lg">
@@ -261,8 +264,8 @@ export default async function HomePage() {
           <Reveal className="mt-8 text-center">
             <p className="text-ink/70">
               Masih bingung?{" "}
-              <a href={`mailto:${siteConfig.email}`} className="font-semibold text-purple underline underline-offset-4">
-                {siteConfig.email}
+              <a href={`mailto:${contact.email}`} className="font-semibold text-purple underline underline-offset-4">
+                {contact.email}
               </a>{" "}
               siap dihubungi.
             </p>

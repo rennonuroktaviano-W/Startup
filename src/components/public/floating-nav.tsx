@@ -10,7 +10,7 @@ import { siteConfig } from "@/lib/site";
 import { MenuOverlay } from "@/components/public/menu-overlay";
 import { MobileDock } from "@/components/public/mobile-dock";
 
-export function FloatingNav() {
+export function FloatingNav({ brandName = siteConfig.name }: { brandName?: string }) {
   const [menuOpen, setMenuOpen] = useState(false);
   const [ctaHidden, setCtaHidden] = useState(false);
   const pathname = usePathname();
@@ -60,14 +60,14 @@ export function FloatingNav() {
       {/* Brand pebble */}
       <Link
         href="/"
-        aria-label={`${siteConfig.name} — kembali ke Home`}
+        aria-label={`${brandName} — kembali ke Home`}
         className="toy-surface fixed left-3 top-3 z-40 flex items-center gap-2 rounded-full py-1.5 pl-1.5 pr-4 md:left-5 md:top-5"
       >
         <span className="flex h-9 w-9 items-center justify-center rounded-full border-2 border-ink bg-lemon font-display text-sm font-bold shadow-[2px_2px_0_0_var(--ink)]">
           KI
         </span>
         <span className="font-display text-sm font-semibold text-ink sm:text-base">
-          {siteConfig.name}
+          {brandName}
         </span>
       </Link>
 

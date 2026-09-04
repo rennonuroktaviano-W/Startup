@@ -3,8 +3,11 @@ import { FloatingNav } from "@/components/public/floating-nav";
 import { ClosingPlayground } from "@/components/public/closing-playground";
 import { CustomCursor } from "@/components/public/custom-cursor";
 import { VisibilityPause } from "@/components/public/visibility-pause";
+import { getPublicSettings } from "@/lib/public-settings";
 
-export default function PublicLayout({ children }: { children: React.ReactNode }) {
+export default async function PublicLayout({ children }: { children: React.ReactNode }) {
+  const settings = await getPublicSettings();
+
   return (
     <>
       <a
@@ -13,7 +16,7 @@ export default function PublicLayout({ children }: { children: React.ReactNode }
       >
         Lompat ke konten
       </a>
-      <FloatingNav />
+      <FloatingNav brandName={settings.brand.name} />
       <main id="main">{children}</main>
       <ClosingPlayground />
       <CustomCursor />

@@ -1,5 +1,6 @@
 import { Mail, MessageCircle, Clock3 } from "lucide-react";
-import { siteConfig, whatsappLink } from "@/lib/site";
+import { whatsappLink } from "@/lib/site";
+import { getPublicSettings } from "@/lib/public-settings";
 import { buildMetadata } from "@/lib/seo";
 import { SectionHeader } from "@/components/public/section-header";
 import { ProjectBriefForm } from "@/components/forms/project-brief";
@@ -17,6 +18,7 @@ export default async function ContactPage({
   searchParams: Promise<{ type?: string }>;
 }) {
   const sp = await searchParams;
+  const { contact } = await getPublicSettings();
 
   return (
     <div className="relative overflow-hidden">
@@ -35,13 +37,13 @@ export default async function ContactPage({
 
         <div className="mt-10 grid gap-8 lg:grid-cols-[1fr_340px]">
           <Reveal>
-            <ProjectBriefForm prefillType={sp.type ?? ""} />
+            <ProjectBriefForm prefillType={sp.type ?? ""} whatsapp={contact.whatsapp} responseTime={contact.responseTime} />
           </Reveal>
 
           <Reveal delay={0.1} className="lg:pt-10">
             <div className="space-y-4">
               <a
-                href={whatsappLink("Halo KotakIde Studio, saya mau tanya-tanya soal proyek.")}
+                href={whatsappLink("Halo KotakIde Studio, saya mau tanya-tanya soal proyek.", contact.whatsapp)}
                 target="_blank"
                 rel="noopener noreferrer"
                 className="flex items-center gap-3 rounded-2xl border-2 border-ink bg-surface p-4 shadow-[3px_3px_0_0_var(--ink)] transition-transform hover:-translate-y-0.5"
@@ -51,11 +53,11 @@ export default async function ContactPage({
                 </span>
                 <span>
                   <span className="block text-sm font-bold text-ink">WhatsApp</span>
-                  <span className="block text-sm text-ink/60">{siteConfig.whatsappDisplay}</span>
+                  <span className="block text-sm text-ink/60">{contact.whatsappDisplay}</span>
                 </span>
               </a>
               <a
-                href={`mailto:${siteConfig.email}`}
+                href={`mailto:${contact.email}`}
                 className="flex items-center gap-3 rounded-2xl border-2 border-ink bg-surface p-4 shadow-[3px_3px_0_0_var(--ink)] transition-transform hover:-translate-y-0.5"
               >
                 <span className="flex h-11 w-11 items-center justify-center rounded-full border-2 border-ink bg-sky">
@@ -63,7 +65,7 @@ export default async function ContactPage({
                 </span>
                 <span>
                   <span className="block text-sm font-bold text-ink">Email</span>
-                  <span className="block text-sm text-ink/60">{siteConfig.email}</span>
+                  <span className="block text-sm text-ink/60">{contact.email}</span>
                 </span>
               </a>
               <div className="flex items-center gap-3 rounded-2xl border-2 border-dashed border-ink/30 bg-surface/70 p-4">
@@ -71,7 +73,7 @@ export default async function ContactPage({
                   <Clock3 className="h-5 w-5" />
                 </span>
                 <p className="text-sm text-ink/70">
-                  {siteConfig.responseTime}. Formulir ini juga tersimpan otomatis saat kamu kirim.
+                  {contact.responseTime}. Formulir ini juga tersimpan otomatis saat kamu kirim.
                 </p>
               </div>
             </div>

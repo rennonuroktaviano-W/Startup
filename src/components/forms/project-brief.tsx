@@ -4,7 +4,7 @@ import { useMemo, useRef, useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, ArrowRight, Check, PartyPopper } from "lucide-react";
 import { cn } from "@/lib/utils";
-import { whatsappLink } from "@/lib/site";
+import { whatsappLink, siteConfig } from "@/lib/site";
 import { servicesList, budgetRanges, responseTimeText } from "@/lib/content";
 import { submitInquiry, type SubmitInquiryResult } from "@/actions/inquiries";
 import { ToyButton } from "@/components/ui/button";
@@ -80,7 +80,17 @@ const emptyForm: FormState = {
   attachments: [],
 };
 
-export function ProjectBriefForm({ prefillType = "" }: { prefillType?: string }) {
+export function ProjectBriefForm({
+  prefillType = "",
+  whatsapp,
+  responseTime,
+}: {
+  prefillType?: string;
+  whatsapp?: string;
+  responseTime?: string;
+}) {
+  const chatNumber = whatsapp ?? siteConfig.whatsapp;
+  const responseCopy = responseTime ?? responseTimeText;
   const [step, setStep] = useState(0);
   const [form, setForm] = useState<FormState>({
     ...emptyForm,
@@ -205,10 +215,10 @@ export function ProjectBriefForm({ prefillType = "" }: { prefillType?: string })
           {result.referenceNumber}
         </p>
         <p className="mt-4 text-sm text-ink/70">
-          Kami akan menghubungimu, {responseTimeText}. Mau lebih cepat?
+          Kami akan menghubungimu, {responseCopy}. Mau lebih cepat?
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
-          <ToyButton href={whatsappLink(`Halo, saya ${form.name}. Saya baru kirim project brief nomor ${result.referenceNumber}.`)}>
+          <ToyButton href={whatsappLink(`Halo, saya ${form.name}. Saya baru kirim project brief nomor ${result.referenceNumber}.`, chatNumber)}>
             Chat WhatsApp Sekarang
           </ToyButton>
           <ToyButton href="/" variant="secondary">
