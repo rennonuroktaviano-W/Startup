@@ -1156,6 +1156,126 @@ Project baru dianggap selesai ketika:
 
 ---
 
+# 🚀 Production Deployment
+
+Target infrastruktur (PRD §36):
+
+- Hosting Node.js yang kompatibel dengan Next.js.
+- MySQL terkelola (managed).
+- Object storage/CDN untuk media publik.
+- HTTPS wajib.
+
+## Prosedur Deploy (alur pipeline)
+
+1. **Install dependency dari lockfile** — pastikan pakai `package-lock.json`:
+
+   ```bash
+   npm ci
+   ```
+
+2. **Generate Prisma client**:
+
+   ```bash
+   npm run db:generate
+   ```
+
+3. **Lint:**
+
+   ```bash
+   npm run lint
+   ```
+
+4. **Test:**
+
+   ```bash
+   npm run test
+   ```
+
+5. **Production build:**
+
+   ```bash
+   npm run build
+   ```
+
+6. **Jalankan migration produksi** (searah, tanpa menghapus data):
+
+   ```bash
+   npm run db:deploy
+   # setara: npx prisma migrate deploy
+   ```
+
+7. **Deploy** build `.next/` ke hosting (Vercel, Node server, atau kontainer).
+
+8. **Smoke test** — buka homepage, pastikan `/sitemap.xml` dan `/robots.txt` valid.
+
+> Pipeline yang sama sudah otomatis berjalan di **GitHub Actions** (`.github/workflows/ci.yml`)
+> dengan service MySQL terprovisi: `npm ci` → `typecheck` → `lint` → `test` →
+> `db:generate` → `migrate deploy` → `build`.
+
+## Scheduled Publishing (Cron)
+
+Posting yang berstatus `SCHEDULED` diterbitkan otomatis lewat endpoint aman:
+
+```txt
+GET /api/cron/publish?secret=<CRON_SECRET>
+```
+
+Panggil endpoint ini secara teratur (mis. setiap 5–15 menit) dari scheduler provider
+(Vercel Cron, GitHub Actions schedule, cron server). Tanpa `secret` yang cocok, panggilan ditolak.
+
+## Migration Procedure
+
+- `npm run db:migrate` — pengembangan: buat + jalankan migrasi baru.
+- `npm run db:deploy` — **produksi**: hanya menerapkan migrasi yang belum jalan, aman dipakai berulang.
+- `npm run db:start` / `db:stop` — jalankan/hentikan MySQL lokal (Windows, PowerShell).
+- Snapshot database sebelum migrate produksi besar: `mysqldump -u<user> -p <db> > backup.sql`.
+
+## Seed & Setup Admin Awal
+
+Seed aman tidak pernah membuat data bisnis palsu (klien, testimoni, statistik). Ia membuat:
+
+- Setting global placeholder.
+- Layanan nyata, FAQ umum, navigasi, range budget.
+- Dua **concept project** berlabel jelas `Concept / Internal Experiment`.
+- Satu akun **Super Admin** — hanya bila `INITIAL_ADMIN_EMAIL` & `INITIAL_ADMIN_PASSWORD` diset:
+
+  ```bash
+  npm run db:seed
+  ```
+
+> `INITIAL_ADMIN_PASSWORD` hanya untuk setup lokal; ganti password di `/admin/users`
+> dan **jangan** pakai ulang nilai itu di produksi. Setelah seed, hapus/ubah nilai env-nya.
+
+## Backup & Export
+
+- **Export CMS** — menu `Backup` di `/admin/backups` mengunduh seluruh konten sebagai JSON (layanan, proyek, artikel, halaman, redirect, pengaturan).
+- **Database penuh** (termasuk akun & media) — `mysqldump` di server database Anda.
+- **Export prospek** — menu Leads → Export CSV di `/admin/leads`.
+- Backup tidak pernah tersedia lewat URL publik; restore produksi hanya dari sisi infrastructure dengan konfirmasi tinggi.
+
+---
+
+# #️⃣ Environment Variable Checklist
+
+Variabel **wajib** untuk produksi:
+
+| Variabel | Keterangan |
+|---|---|
+| `DATABASE_URL` | Koneksi MySQL (format `mysql://USER:PASS@HOST:PORT/DB`) |
+| `AUTH_SECRET` | Rahasia penandatanganan session — nilai acak panjang |
+| `NEXT_PUBLIC_SITE_URL` | URL publik site (dipakai canonical & email link) |
+| `MAIL_PROVIDER` | `smtp` di produksi (`log` hanya untuk dev) |
+| `MAIL_FROM` | Alamat pengirim email |
+| `ADMIN_NOTIFICATION_EMAILS` | Penerima fallback notifikasi email |
+| `INITIAL_ADMIN_EMAIL/PASSWORD` | Hanya untuk seed awal (lalu diabaikan) |
+| `STORAGE_DRIVER` | `s3` di produksi (S3-compatible) + kunci objek storage |
+
+Variabel **opsional**: `SMTP_HOST/PORT/USER/PASS`, `STORAGE_BUCKET/REGION/ENDPOINT/ACCESS_KEY/SECRET_KEY`, `ANALYTICS_PROVIDER/ID`, `CRON_SECRET` (scheduled publish), `AUTH_URL`.
+
+Validasikan environment saat boot; aplikasi memberi error jelas tanpa mencetak secret. Lihat contoh lengkap tanpa nilai di `.env.example`.
+
+---
+
 # 🛣️ Development Roadmap
 
 ```txt
