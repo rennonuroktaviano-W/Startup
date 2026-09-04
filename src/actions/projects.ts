@@ -1,6 +1,7 @@
 "use server";
 
 import { z } from "zod";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/db";
 import { logAudit } from "@/lib/audit";
 import { getRequiredSession } from "@/lib/auth/session";
@@ -64,6 +65,7 @@ export async function upsertProject(input: z.infer<typeof projectSchema>) {
     outcomeJson: parseJson(rest.outcomeJson),
     isFeatured: rest.isFeatured ?? false,
     status: rest.status ?? "DRAFT",
+    publishedAt: rest.status === "PUBLISHED" ? new Date() : rest.status === "DRAFT" ? null : undefined,
     metaTitle: rest.metaTitle ?? null,
     metaDescription: rest.metaDescription ?? null,
   };
@@ -88,6 +90,8 @@ export async function upsertProject(input: z.infer<typeof projectSchema>) {
 
   await logAudit({ actorId: session.user.id, action: id ? "update" : "create", entityType: "Project", entityId: record.id, summary: { title: data.title, status: data.status } });
   await saveRevision("Project", record.id, session.user.id, { ...data, serviceIds: serviceIds ?? [] });
+  revalidatePath("/work");
+  revalidatePath(`/work/${record.slug}`);
   return { ok: true, id: record.id };
 }
 
@@ -96,6 +100,7 @@ export async function deleteProject(id: string) {
   requireCapability(session.user.role, "content:write");
   await prisma.project.delete({ where: { id } });
   await logAudit({ actorId: session.user.id, action: "delete", entityType: "Project", entityId: id });
+  revalidatePath("/work");
   return { ok: true };
 }
 
@@ -110,7 +115,15 @@ export async function togglePublishProject(id: string, status: "DRAFT" | "PUBLIS
       return { ok: false as const, message: "Belum bisa diterbitkan: " + issues.map((i) => i.field).join(", ") + " belum lengkap." };
     }
   }
-  const updated = await prisma.project.update({ where: { id }, data: { status } });
+  const updated = await prisma.project.update({
+    where: { id },
+    data: {
+      status,
+      publishedAt: status === "PUBLISHED" ? (record.publishedAt ?? new Date()) : status === "DRAFT" ? null : undefined,
+    },
+  });
   await logAudit({ actorId: session.user.id, action: "publish", entityType: "Project", entityId: id, summary: { status } });
+  revalidatePath("/work");
+  revalidatePath(`/work/${record.slug}`);
   return { ok: true as const, status: updated.status };
 }

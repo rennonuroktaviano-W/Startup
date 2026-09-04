@@ -44,21 +44,24 @@ async function adminLogin(page: Page) {
   await expect(page).toHaveURL(/\/admin\/dashboard/, { timeout: 15_000 });
 }
 
-// Fields yang didapat lewat client-side (soft) navigation bisa direset ke nilai
-// awal saat React selesai hydration. Coba fill ulang sampai nilainya menempel.
-async function fillAfterHydration(page: Page, locator: ReturnType<Page["getByPlaceholder"]>, value: string) {
+// Submit catatan yang tahan terhadap hydration race: nilai bisa direset ulang oleh
+// re-render client saat soft navigation, yang membuat tombol kembali disabled.
+// Isi ulang sampai catatan benar-benar tersimpan.
+async function submitNote(page: Page, noteInput: ReturnType<Page["getByPlaceholder"]>, value: string) {
+  const submitBtn = page.getByRole("button", { name: /tambah catatan/i });
   for (let i = 0; i < 15; i++) {
-    await locator.fill(value);
+    await noteInput.fill(value);
     try {
-      await expect(locator).toHaveValue(value, { timeout: 500 });
+      await expect(submitBtn).toBeEnabled({ timeout: 3000 });
+      await submitBtn.click({ timeout: 3000 });
+      await expect(page.getByText(value)).toBeVisible({ timeout: 3000 });
       return;
     } catch {
-      // hydration masih berjalan; tunggu sebentar lalu isi ulang
+      // field/tombol ter-reset oleh hydration; tunggu lalu coba lagi
     }
-    await page.waitForTimeout(250);
+    await page.waitForTimeout(400);
   }
-  await locator.fill(value);
-  await expect(locator).toHaveValue(value);
+  throw new Error(`Gagal menyimpan catatan "${value}" setelah beberapa percobaan.`);
 }
 
 test.describe.configure({ mode: "serial" });
@@ -85,9 +88,7 @@ test("§33.3 alur lengkap: brief → prospek di admin → konsep project dipubli
   // 4) Admin: tambah catatan internal.
   const noteInput = page.getByPlaceholder(/Catat hasil diskusi/);
   await expect(noteInput).toBeVisible();
-  await fillAfterHydration(page, noteInput, "Catatan dari sesi e2e.");
-  await page.getByRole("button", { name: /tambah catatan/i }).click();
-  await expect(page.getByText("Catatan dari sesi e2e.")).toBeVisible();
+  await submitNote(page, noteInput, "Catatan dari sesi e2e.");
 
   // 5) Admin: buat proyek konsep lalu publikasikan.
   const conceptTitle = `Konsep e2e ${uniq()}`;
