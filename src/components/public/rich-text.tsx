@@ -1,5 +1,6 @@
 import Link from "next/link";
 import type { ArticleBlock } from "@/lib/content-articles";
+import { assignHeadingIds } from "@/lib/headings";
 
 function InlineText({ node }: { node: ArticleBlock }) {
   const text = node.text ?? "";
@@ -63,6 +64,10 @@ function NodeRenderer({ node }: { node: ArticleBlock }) {
     const size =
       level === 1 ? "text-3xl" : level === 2 ? "text-2xl" : level === 3 ? "text-xl" : "text-lg";
     const cls = `mt-8 font-display font-semibold text-ink ${size}`;
+    const anchorProps =
+      typeof node.attrs?.id === "string"
+        ? { id: node.attrs.id, className: `scroll-mt-32 ${cls}` }
+        : { className: cls };
     const inner = (
       <>
         {(node.content ?? []).map((child, i) => (
@@ -72,17 +77,17 @@ function NodeRenderer({ node }: { node: ArticleBlock }) {
     );
     switch (Tag) {
       case "h1":
-        return <h1 className={cls}>{inner}</h1>;
+        return <h1 {...anchorProps}>{inner}</h1>;
       case "h3":
-        return <h3 className={cls}>{inner}</h3>;
+        return <h3 {...anchorProps}>{inner}</h3>;
       case "h4":
-        return <h4 className={cls}>{inner}</h4>;
+        return <h4 {...anchorProps}>{inner}</h4>;
       case "h5":
-        return <h5 className={cls}>{inner}</h5>;
+        return <h5 {...anchorProps}>{inner}</h5>;
       case "h6":
-        return <h6 className={cls}>{inner}</h6>;
+        return <h6 {...anchorProps}>{inner}</h6>;
       default:
-        return <h2 className={cls}>{inner}</h2>;
+        return <h2 {...anchorProps}>{inner}</h2>;
     }
   }
 
@@ -136,9 +141,11 @@ function NodeRenderer({ node }: { node: ArticleBlock }) {
 }
 
 export function RichText({ blocks }: { blocks: ArticleBlock }) {
+  const stamped = assignHeadingIds(blocks);
   return (
     <div className="[&_h1]:mt-8 [&_h2]:mt-8">
-      <NodeRenderer node={blocks} />
+      <NodeRenderer node={stamped} />
     </div>
   );
 }
+

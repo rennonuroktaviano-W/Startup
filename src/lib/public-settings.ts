@@ -41,12 +41,17 @@ export async function getPublicSettings() {
       )
     : [];
 
+  const story: string[] = Array.isArray(raw["about.story"])
+    ? (raw["about.story"] as string[]).filter((s) => typeof s === "string" && s.length > 0)
+    : [];
+
   return {
     brand: {
       name: stringOr("app.name", siteConfig.name),
       tagline: stringOr("app.tagline", siteConfig.tagline),
       description: stringOr("app.description", siteConfig.defaultOgDescription),
     },
+    about: { story },
     contact: {
       email: stringOr("contact.email", siteConfig.email),
       whatsapp: stringOr("contact.whatsapp", siteConfig.whatsapp),

@@ -208,6 +208,7 @@ interface ProjectRow {
   title: string;
   projectType: string;
   industry: string | null;
+  isFeatured: boolean | null;
   year: number | null;
   summary: string | null;
   challengeJson: unknown;
@@ -233,6 +234,7 @@ async function projectToPublic(row: ProjectRow): Promise<Project> {
     title: row.title,
     projectType: row.projectType as "CLIENT" | "CONCEPT",
     industry: row.industry ?? "",
+    isFeatured: row.isFeatured ?? false,
     year: row.year ?? new Date().getFullYear(),
     summary: row.summary ?? "",
     challenge: readText(row.challengeJson),

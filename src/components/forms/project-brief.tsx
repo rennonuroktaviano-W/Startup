@@ -103,6 +103,9 @@ export function ProjectBriefForm({
   const [result, setResult] = useState<SubmitInquiryResult | null>(null);
   const [serverMessage, setServerMessage] = useState("");
   const startedAt = useRef<number | null>(null);
+  const submissionKey = useRef<string>(
+    crypto.randomUUID ? crypto.randomUUID().replace(/-/g, "") : "00000000000000000000000000000000",
+  );
   const { track } = useAnalytics();
 
   const set = (patch: Partial<FormState>) => {
@@ -190,6 +193,7 @@ export function ProjectBriefForm({
       budgetRange: form.budgetRange,
       consent: form.consent,
       honeypot: "",
+      submissionKey: submissionKey.current,
       startedAt: startedAt.current ?? Date.now(),
       attachments: form.attachments,
     });

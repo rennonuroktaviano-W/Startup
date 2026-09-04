@@ -37,6 +37,7 @@ const inquirySchema = z.object({
     .boolean({ errorMap: () => ({ message: "Kamu perlu menyetujui kebijakan privasi" }) })
     .refine((v) => v === true, "Kamu perlu menyetujui kebijakan privasi"),
   honeypot: z.string().max(0).optional().default(""),
+  submissionKey: z.string().regex(/^[a-f0-9]{32}$/, "Referensi submit tidak valid"),
   startedAt: z.number().int(),
   attachments: z
     .array(
@@ -91,6 +92,14 @@ export async function submitInquiry(
     return { ok: false, message: "Isian tampaknya terlalu cepat. Coba lagi sebentar." };
   }
 
+  const existing = await prisma.inquiry.findUnique({
+    where: { submissionKey: data.submissionKey },
+    select: { referenceNumber: true },
+  });
+  if (existing) {
+    return { ok: true, referenceNumber: existing.referenceNumber };
+  }
+
   let service = null;
   if (data.serviceSlug) {
     service = await prisma.service.findUnique({ where: { slug: data.serviceSlug } });
@@ -100,6 +109,7 @@ export async function submitInquiry(
     const inquiry = await prisma.inquiry.create({
       data: {
         referenceNumber: generateReference(),
+        submissionKey: data.submissionKey,
         name: data.name,
         companyName: data.companyName || null,
         email: data.email,

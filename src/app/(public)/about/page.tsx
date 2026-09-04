@@ -4,6 +4,7 @@ import { siteConfig } from "@/lib/site";
 import { buildMetadata } from "@/lib/seo";
 import { principles } from "@/lib/content";
 import { getPublicTeam, getPublicClients } from "@/lib/public-data";
+import { getPublicSettings } from "@/lib/public-settings";
 import { SectionHeader } from "@/components/public/section-header";
 import { ToyButton } from "@/components/ui/button";
 import { Reveal } from "@/components/motion/reveal";
@@ -53,7 +54,17 @@ function SocialLink({ platform, url }: { platform: string; url: string }) {
 }
 
 export default async function AboutPage() {
-  const [team, clients] = await Promise.all([getPublicTeam(), getPublicClients()]);
+  const [team, clients, settings] = await Promise.all([
+    getPublicTeam(),
+    getPublicClients(),
+    getPublicSettings(),
+  ]);
+  const story = settings.about.story.length
+    ? settings.about.story
+    : [
+        `${siteConfig.name} lahir dari kegelisahan sederhana: banyak bisnis bagus yang sulit dipercaya hanya karena kehadiran digitalnya tidak rapi. Sebagian lagi punya website tapi tidak pernah bisa diubah lagi — atau terasa seperti template yang tidak mencerminkan isinya sama sekali.`,
+        `Kami berdiri untuk menjadi sisi teknis yang bersahabat: menjelaskan dengan bahasa sederhana, jujur soal proses dan biaya, serta mengutamakan hasil yang benar-benar dipakai — bukan sekadar tampilan yang diupload dan dibiarkan.`,
+      ];
   return (
     <>
       <section className="relative overflow-hidden">
@@ -69,17 +80,11 @@ export default async function AboutPage() {
             }
           />
           <Reveal className="mt-6 max-w-3xl">
-            <p className="text-lg leading-relaxed text-ink/75">
-              {siteConfig.name} lahir dari kegelisahan sederhana: banyak bisnis bagus yang sulit
-              dipercaya hanya karena kehadiran digitalnya tidak rapi. Sebagian lagi punya website tapi
-              tidak pernah bisa diubah lagi — atau terasa seperti template yang tidak mencerminkan
-              isinya sama sekali.
-            </p>
-            <p className="mt-4 text-lg leading-relaxed text-ink/75">
-              Kami berdiri untuk menjadi sisi teknis yang bersahabat: menjelaskan dengan bahasa
-              sederhana, jujur soal proses dan biaya, serta mengutamakan hasil yang benar-benar
-              dipakai — bukan sekadar tampilan yang diupload dan dibiarkan.
-            </p>
+            {story.map((paragraph, i) => (
+              <p key={i} className={i > 0 ? "mt-4 text-lg leading-relaxed text-ink/75" : "text-lg leading-relaxed text-ink/75"}>
+                {paragraph}
+              </p>
+            ))}
           </Reveal>
         </div>
       </section>

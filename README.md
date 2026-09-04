@@ -207,6 +207,21 @@ npm run start
 Ke Vercel: push ke repo lalu hubungkan proyek, atau `vercel --prod`. Pastikan Prisma
 generate dijalankan pada saat build (`npm run db:generate && npm run build`).
 
+### Penerbitan Terjadwal (Scheduled Publishing)
+
+Posting blog berstatus `SCHEDULED` dipublikasikan otomatis oleh cron. Bila environment
+deployment tidak menyediakan scheduler, panggil route berikut dari provider cron:
+
+```bash
+curl -X GET "$DEPLOY_URL/api/cron/publish" -H "Authorization: Bearer $CRON_SECRET"
+```
+
+- Set `CRON_SECRET` di `.env` production. Selama kosong/unset, route menolak semua
+  permintaan (`401`), sehingga fitur aman-by-default.
+- Route mempublikasikan semua post `SCHEDULED` dengan `scheduledAt <= now`, mengisi
+  `publishedAt`, mencatat audit `cron-scheduled`, dan revalidate Halaman `/insights`.
+- Feed RSS tersedia di `/feed.xml` (format `application/rss+xml`).
+
 ## Fase Pengembangan
 
 Pengerjaan dibagi fase dengan tanda commit yang konsisten (`feat(phaseN): ...`) dan

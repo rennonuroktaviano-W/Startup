@@ -9,6 +9,7 @@ import {
   DraftingCompass,
   CalendarClock,
   Activity,
+  HardDrive,
 } from "lucide-react";
 import { prisma } from "@/lib/db";
 import { getSession } from "@/lib/auth/session";
@@ -31,7 +32,14 @@ export default async function AdminDashboardPage() {
     prisma.project.count({ where: { deletedAt: null, status: "PUBLISHED" } }),
     prisma.service.count({ where: { deletedAt: null, status: { in: ["DRAFT", "REVIEW"] } } }),
     prisma.blogPost.count({ where: { deletedAt: null, status: "SCHEDULED" } }),
+    prisma.mediaAsset.aggregate({ _sum: { sizeBytes: true } }),
   ]);
+
+  const usedBytes = counts[7]._sum.sizeBytes ?? 0;
+  const storageLabel =
+    usedBytes >= 1024 * 1024 * 1024
+      ? `${(usedBytes / (1024 * 1024 * 1024)).toFixed(1)} GB`
+      : `${(usedBytes / (1024 * 1024)).toFixed(1)} MB`;
 
   const recentAudit = await prisma.auditLog.findMany({
     orderBy: { createdAt: "desc" },
@@ -54,6 +62,7 @@ export default async function AdminDashboardPage() {
     { label: "Proyek Published", value: counts[4], icon: FolderKanban, tone: "bg-lemon", href: "/admin/projects" },
     { label: "Draft Konten", value: counts[5], icon: DraftingCompass, tone: "bg-lemon", href: "/admin/services" },
     { label: "Terjadwal", value: counts[6], icon: CalendarClock, tone: "bg-sky", href: "/admin/blog" },
+    { label: "Penyimpanan Media", value: storageLabel, icon: HardDrive, tone: "bg-mint", href: "/admin/media" },
   ];
 
   const hour = new Date().getHours();
@@ -173,7 +182,7 @@ function WidgetCard({
   href,
 }: {
   label: string;
-  value: number;
+  value: number | string;
   icon: React.ComponentType<{ className?: string }>;
   tone: string;
   href: string;

@@ -57,6 +57,15 @@ async function seedSettings() {
     },
     { key: "contact.address", group: "contact", valueJson: "", isPublic: true },
     { key: "contact.business_hours", group: "contact", valueJson: "", isPublic: true },
+    {
+      key: "about.story",
+      group: "about",
+      valueJson: [
+        `${siteConfig.name} lahir dari kegelisahan sederhana: banyak bisnis bagus yang sulit dipercaya hanya karena kehadiran digitalnya tidak rapi. Sebagian lagi punya website tapi tidak pernah bisa diubah lagi — atau terasa seperti template yang tidak mencerminkan isinya sama sekali.`,
+        `Kami berdiri untuk menjadi sisi teknis yang bersahabat: menjelaskan dengan bahasa sederhana, jujur soal proses dan biaya, serta mengutamakan hasil yang benar-benar dipakai — bukan sekadar tampilan yang diupload dan dibiarkan.`,
+      ],
+      isPublic: true,
+    },
   ];
 
   for (const s of settings) {

@@ -57,7 +57,7 @@ export async function upsertSettingsBulk(entries: Record<string, string>) {
 
 /** Kunci publik yang boleh/bisa dibaca layout & publik tanpa bocorkan nilai internal. */
 function isPublicKey(key: string): boolean {
-  return key.startsWith("seo.") || key.startsWith("theme.");
+  return key.startsWith("seo.") || key.startsWith("theme.") || key.startsWith("about.");
 }
 
 export async function deleteSetting(key: string) {

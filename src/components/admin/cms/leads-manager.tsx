@@ -18,6 +18,7 @@ import {
   type LeadStatus,
 } from "@/lib/leads";
 import { bulkUpdateStatus, markLeadRead } from "@/actions/inquiries";
+import { budgetRanges } from "@/lib/content";
 import { EmptyState } from "@/components/ui/empty-state";
 
 export type LeadRow = {
@@ -29,11 +30,13 @@ export type LeadRow = {
   whatsapp: string | null;
   preferredContact: string;
   serviceName: string | null;
+  serviceId: string | null;
   goal: string | null;
   budgetRange: string | null;
   status: LeadStatus;
   isRead: boolean;
   assigneeName: string | null;
+  assigneeId: string | null;
   createdAt: string;
 };
 
@@ -41,18 +44,30 @@ export type LeadQuery = {
   status: string;
   q: string;
   view: "table" | "kanban";
+  service: string;
+  budget: string;
+  assignee: string;
+  from: string;
 };
 
 export function LeadsManager({
   leads,
   query,
+  serviceOptions = [],
+  assigneeOptions = [],
 }: {
   leads: LeadRow[];
   query: LeadQuery;
+  serviceOptions?: { slug: string; name: string }[];
+  assigneeOptions?: { id: string; name: string }[];
 }) {
   const [view, setView] = useState<"table" | "kanban">(query.view === "kanban" ? "kanban" : "table");
   const [status, setStatus] = useState<string>(query.status || "ALL");
   const [q, setQ] = useState<string>(query.q || "");
+  const [service, setService] = useState<string>(query.service || "ALL");
+  const [budget, setBudget] = useState<string>(query.budget || "ALL");
+  const [assignee, setAssignee] = useState<string>(query.assignee || "ALL");
+  const [from, setFrom] = useState<string>(query.from || "");
   const [selected, setSelected] = useState<Set<string>>(new Set());
   const [busy, setBusy] = useState(false);
   const timer = useRef<ReturnType<typeof setTimeout> | null>(null);
@@ -60,6 +75,13 @@ export function LeadsManager({
   const filtered = useMemo(() => {
     let list = leads;
     if (status !== "ALL") list = list.filter((l) => l.status === status);
+    if (service !== "ALL") list = list.filter((l) => l.serviceId === service);
+    if (budget !== "ALL") list = list.filter((l) => l.budgetRange === budget);
+    if (assignee !== "ALL") list = list.filter((l) => l.assigneeId === assignee);
+    if (from) {
+      const fromDate = new Date(from);
+      if (!Number.isNaN(fromDate.getTime())) list = list.filter((l) => new Date(l.createdAt) >= fromDate);
+    }
     if (q.trim()) {
       const needle = q.trim().toLowerCase();
       list = list.filter(
@@ -71,16 +93,26 @@ export function LeadsManager({
       );
     }
     return list;
-  }, [leads, status, q]);
+  }, [leads, status, q, service, budget, assignee, from]);
 
-  const applyFilter = (patch: Partial<{ status: string; q: string }>) => {
+  const applyFilter = (patch: Partial<{ status: string; q: string; service: string; budget: string; assignee: string; from: string }>) => {
     if (timer.current) clearTimeout(timer.current);
     timer.current = setTimeout(() => {
       const sp = new URLSearchParams();
-      const nextStatus = patch.status ?? status;
-      const nextQ = patch.q ?? q;
-      if (nextStatus && nextStatus !== "ALL") sp.set("status", nextStatus);
-      if (nextQ.trim()) sp.set("q", nextQ.trim());
+      const next = {
+        status: patch.status ?? status,
+        q: patch.q ?? q,
+        service: patch.service ?? service,
+        budget: patch.budget ?? budget,
+        assignee: patch.assignee ?? assignee,
+        from: patch.from ?? from,
+      };
+      if (next.status && next.status !== "ALL") sp.set("status", next.status);
+      if (next.q.trim()) sp.set("q", next.q.trim());
+      if (next.service && next.service !== "ALL") sp.set("service", next.service);
+      if (next.budget && next.budget !== "ALL") sp.set("budget", next.budget);
+      if (next.assignee && next.assignee !== "ALL") sp.set("assignee", next.assignee);
+      if (next.from) sp.set("from", next.from);
       sp.set("view", view);
       window.location.search = sp.toString();
     }, 400);
@@ -116,7 +148,7 @@ export function LeadsManager({
     window.location.reload();
   };
 
-  const exportQuery = `?status=${status}&q=${encodeURIComponent(q)}`;
+  const exportQuery = `?status=${status}&q=${encodeURIComponent(q)}&service=${service}&budget=${budget}&assignee=${assignee}${from ? `&from=${encodeURIComponent(from)}` : ""}`;
 
   return (
     <div className="space-y-4">
@@ -150,6 +182,67 @@ export function LeadsManager({
             </option>
           ))}
         </select>
+        <select
+          value={service}
+          onChange={(e) => {
+            setService(e.target.value);
+            applyFilter({ service: e.target.value });
+          }}
+          aria-label="Filter layanan"
+          className="h-10 rounded-xl border-2 border-ink bg-white px-3 text-sm"
+        >
+          <option value="ALL">Semua layanan</option>
+          {serviceOptions.map((s) => (
+            <option key={s.slug} value={s.slug}>
+              {s.name}
+            </option>
+          ))}
+        </select>
+        <select
+          value={budget}
+          onChange={(e) => {
+            setBudget(e.target.value);
+            applyFilter({ budget: e.target.value });
+          }}
+          aria-label="Filter budget"
+          className="h-10 rounded-xl border-2 border-ink bg-white px-3 text-sm"
+        >
+          <option value="ALL">Semua budget</option>
+          {budgetRanges.map((b) => (
+            <option key={b.value} value={b.value}>
+              {b.label}
+            </option>
+          ))}
+        </select>
+        <select
+          value={assignee}
+          onChange={(e) => {
+            setAssignee(e.target.value);
+            applyFilter({ assignee: e.target.value });
+          }}
+          aria-label="Filter penanggung jawab"
+          className="h-10 rounded-xl border-2 border-ink bg-white px-3 text-sm"
+        >
+          <option value="ALL">Semua penanggung jawab</option>
+          {assigneeOptions.map((u) => (
+            <option key={u.id} value={u.id}>
+              {u.name}
+            </option>
+          ))}
+        </select>
+        <label className="flex items-center gap-1.5 text-xs font-semibold text-ink/60">
+          Dari
+          <input
+            type="date"
+            value={from}
+            onChange={(e) => {
+              setFrom(e.target.value);
+              applyFilter({ from: e.target.value });
+            }}
+            aria-label="Filter dari tanggal"
+            className="h-10 rounded-xl border-2 border-ink bg-white px-2 text-sm text-ink"
+          />
+        </label>
         <div className="flex overflow-hidden rounded-full border-2 border-ink">
           <button
             type="button"

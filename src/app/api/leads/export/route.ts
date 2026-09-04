@@ -20,9 +20,20 @@ export async function GET(request: Request) {
   const { searchParams } = new URL(request.url);
   const status = searchParams.get("status");
   const q = searchParams.get("q")?.toLowerCase();
+  const service = searchParams.get("service");
+  const budget = searchParams.get("budget");
+  const assignee = searchParams.get("assignee");
+  const from = searchParams.get("from");
 
   const where: Record<string, unknown> = { deletedAt: null };
   if (status && status !== "ALL") where.status = status;
+  if (service && service !== "ALL") where.service = { slug: service };
+  if (budget && budget !== "ALL") where.budgetRange = budget;
+  if (assignee && assignee !== "ALL") where.assigneeId = assignee;
+  if (from) {
+    const fromDate = new Date(from);
+    if (!Number.isNaN(fromDate.getTime())) where.createdAt = { gte: fromDate };
+  }
   if (q) {
     where.OR = [
       { name: { contains: q } },

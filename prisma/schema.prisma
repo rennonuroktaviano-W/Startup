@@ -459,6 +459,7 @@ model FAQ {
 model Inquiry {
   id                String          @id @default(cuid())
   referenceNumber   String          @unique
+  submissionKey     String?         @unique
   name              String
   companyName       String?
   email             String

@@ -12,6 +12,9 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
   const [query, setQuery] = useState("");
   const [service, setService] = useState<string>("all");
   const [type, setType] = useState<"all" | ProjectType>("all");
+  const [industry, setIndustry] = useState<string>("all");
+  const [sort, setSort] = useState<"newest" | "featured">("newest");
+  const [visible, setVisible] = useState(6);
   const { track } = useAnalytics();
 
   const trackFilter = (key: string, value: string) => {
@@ -27,6 +30,10 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
     for (const p of projects) for (const s of p.services) if (!map.has(s.slug)) map.set(s.slug, s.name);
     return map;
   }, [projects]);
+  const industryOptions = useMemo(
+    () => Array.from(new Set(projects.map((p) => p.industry).filter(Boolean))).sort(),
+    [projects],
+  );
 
   const filtered = useMemo(() => {
     let list = projects;
@@ -34,10 +41,25 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
     if (q) list = list.filter((p) => p.title.toLowerCase().includes(q) || p.summary.toLowerCase().includes(q));
     if (service !== "all") list = list.filter((p) => p.services.some((s) => s.slug === service));
     if (type !== "all") list = list.filter((p) => p.projectType === type);
+    if (industry !== "all") list = list.filter((p) => p.industry === industry);
+    if (sort === "featured") {
+      list = [...list].sort((a, b) => Number(b.isFeatured ?? false) - Number(a.isFeatured ?? false) || b.year - a.year);
+    } else {
+      list = [...list].sort((a, b) => b.year - a.year);
+    }
     return list;
-  }, [projects, query, service, type]);
+  }, [projects, query, service, type, industry, sort]);
 
-  const hasFilter = query !== "" || service !== "all" || type !== "all";
+  const visibleList = filtered.slice(0, visible);
+  const hasFilter = query !== "" || service !== "all" || type !== "all" || industry !== "all";
+
+  const resetAll = () => {
+    setQuery("");
+    setService("all");
+    setType("all");
+    setIndustry("all");
+    setSort("newest");
+  };
 
   return (
     <div>
@@ -57,6 +79,18 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
           />
         </label>
         <select
+          value={sort}
+          onChange={(e) => {
+            setSort(e.target.value as "newest" | "featured");
+            trackFilter("sort", e.target.value);
+          }}
+          aria-label="Urutkan proyek"
+          className="h-11 rounded-full border-2 border-ink bg-surface px-4 text-sm font-semibold text-ink"
+        >
+          <option value="newest">Terbaru dulu</option>
+          <option value="featured">Unggulan dulu</option>
+        </select>
+        <select
           value={service}
           onChange={(e) => {
             setService(e.target.value);
@@ -72,6 +106,24 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
             </option>
           ))}
         </select>
+        {industryOptions.length > 1 && (
+          <select
+            value={industry}
+            onChange={(e) => {
+              setIndustry(e.target.value);
+              trackFilter("industry", e.target.value);
+            }}
+            aria-label="Filter berdasarkan industri"
+            className="h-11 rounded-full border-2 border-ink bg-surface px-4 text-sm font-semibold text-ink"
+          >
+            <option value="all">Semua industri</option>
+            {industryOptions.map((ind) => (
+              <option key={ind} value={ind}>
+                {ind}
+              </option>
+            ))}
+          </select>
+        )}
         <select
           value={type}
           onChange={(e) => {
@@ -89,13 +141,26 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
       </div>
 
       {filtered.length > 0 ? (
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 filter-grid">
-          {filtered.map((project) => (
-            <div key={project.slug} className="animate-pop">
-              <ProjectCard project={project} />
+        <>
+          <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 filter-grid">
+            {visibleList.map((project) => (
+              <div key={project.slug} className="animate-pop">
+                <ProjectCard project={project} />
+              </div>
+            ))}
+          </div>
+          {visible < filtered.length && (
+            <div className="mt-10 flex justify-center">
+              <button
+                type="button"
+                onClick={() => setVisible((v) => v + 6)}
+                className="rounded-full border-2 border-ink bg-surface px-6 py-2.5 text-sm font-bold text-ink shadow-[2px_2px_0_0_var(--ink)] transition-colors hover:bg-ink/5"
+              >
+                Muat lebih banyak ({filtered.length - visible} lainnya)
+              </button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       ) : (
         <div className="mt-8">
           <EmptyState
@@ -106,11 +171,7 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
               hasFilter ? (
                 <button
                   type="button"
-                  onClick={() => {
-                    setQuery("");
-                    setService("all");
-                    setType("all");
-                  }}
+                  onClick={resetAll}
                   className={cn(
                     "inline-flex items-center gap-2 rounded-full border-2 border-ink bg-lemon px-5 py-2.5 text-sm font-bold text-ink shadow-[2px_2px_0_0_var(--ink)]",
                   )}

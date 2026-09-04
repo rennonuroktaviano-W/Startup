@@ -43,6 +43,7 @@ export type Project = {
   title: string;
   projectType: ProjectType;
   industry: string;
+  isFeatured: boolean;
   year: number;
   summary: string;
   challenge: string;
@@ -345,6 +346,7 @@ const conceptProjects: Project[] = [
     title: "Design System KotakIde",
     projectType: "CONCEPT",
     industry: "Internal Experiment",
+    isFeatured: true,
     year: 2026,
     summary:
       "Eksperimen internal untuk membangun sistem desain yang playful namun kompeten — dipakai sebagai bahan uji untuk website ini sendiri.",
@@ -377,6 +379,7 @@ const conceptProjects: Project[] = [
     title: "Concept: Aplikasi Kasir Mini untuk UMKM",
     projectType: "CONCEPT",
     industry: "Concept Project",
+    isFeatured: false,
     year: 2026,
     summary:
       "Studi konsep internal untuk membayangkan aplikasi kasir sederhana yang bisa dipakai warung dan toko kecil tanpa pelatihan rumit.",
