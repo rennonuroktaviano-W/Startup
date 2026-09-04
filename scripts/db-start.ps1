@@ -1,13 +1,14 @@
 param(
-  [int]$Port = 3307
+  [int]$Port = 3306
 )
 # Starts the project-local MySQL dev instance (see .data/mysql/my.cnf).
 $exists = Test-Path -LiteralPath ".data\mysql\my.cnf"
 if (-not $exists) { throw "my.cnf not found. Run setup once first." }
 
-$procs = Get-Process mysqld -ErrorAction SilentlyContinue | Where-Object { $_.Path -like "*laragon*bin*mysql*" }
-if ($procs) {
-  Write-Host "MySQL dev instance sudah berjalan. (PID $($procs.Id -join ','))"
+# Check if port is already listening (regardless of process)
+$conn = Test-NetConnection -ComputerName 127.0.0.1 -Port $Port -WarningAction SilentlyContinue -InformationLevel Quiet
+if ($conn) {
+  Write-Host "MySQL dev instance sudah berjalan di port $Port."
   exit 0
 }
 

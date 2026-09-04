@@ -89,9 +89,11 @@ export function WorkFilter({ projects }: { projects: Project[] }) {
       </div>
 
       {filtered.length > 0 ? (
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
+        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3 filter-grid">
           {filtered.map((project) => (
-            <ProjectCard key={project.slug} project={project} />
+            <div key={project.slug} className="animate-pop">
+              <ProjectCard project={project} />
+            </div>
           ))}
         </div>
       ) : (

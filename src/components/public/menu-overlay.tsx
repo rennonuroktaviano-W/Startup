@@ -3,6 +3,7 @@
 import { useEffect, useRef } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
+import { motion } from "motion/react";
 import { cn } from "@/lib/utils";
 import { desktopMenuItems, toneBg } from "@/lib/nav";
 import { useAnalytics } from "@/components/analytics/analytics-provider";
@@ -62,34 +63,40 @@ export function MenuOverlay({ onClose }: { onClose: () => void }) {
       >
         <p className="toy-sticker mb-8 rotate-[-2deg] bg-lemon">Main dulu, yuk.</p>
         <nav aria-label="Menu utama" className="w-full max-w-md space-y-2">
-          {desktopMenuItems.map((item) => {
+          {desktopMenuItems.map((item, index) => {
             const active = pathname === item.href;
             return (
-              <Link
+              <motion.div
                 key={item.href}
-                href={item.href}
-                onClick={() => {
-                  track("nav_item_click", { href: item.href, label: item.label });
-                  onClose();
-                }}
-                aria-current={active ? "page" : undefined}
-                className={cn(
-                  "group flex items-center gap-4 rounded-2xl border-2 border-ink bg-surface px-5 py-3 shadow-[3px_3px_0_0_var(--ink)] transition-all",
-                  "hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[0_0_0_0_var(--ink)]",
-                  active && "ring-[3px] ring-purple",
-                )}
+                initial={{ opacity: 0, x: -20 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ duration: 0.3, delay: index * 0.06, ease: [0.2, 0.9, 0.3, 1] }}
               >
-                <span
+                <Link
+                  href={item.href}
+                  onClick={() => {
+                    track("nav_item_click", { href: item.href, label: item.label });
+                    onClose();
+                  }}
+                  aria-current={active ? "page" : undefined}
                   className={cn(
-                    "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-ink/30 font-display text-sm font-bold",
-                    toneBg[item.tone],
+                    "group flex items-center gap-4 rounded-2xl border-2 border-ink bg-surface px-5 py-3 shadow-[3px_3px_0_0_var(--ink)] transition-all",
+                    "hover:translate-x-[3px] hover:translate-y-[3px] hover:shadow-[0_0_0_0_var(--ink)]",
+                    active && "ring-[3px] ring-purple",
                   )}
                 >
-                  {item.number}
-                </span>
-                <span className="font-display text-xl font-semibold text-ink">{item.label}</span>
-                <Sparkle className="ml-auto h-4 w-4 text-ink/25 transition-all group-hover:scale-125 group-hover:text-purple" />
-              </Link>
+                  <span
+                    className={cn(
+                      "flex h-9 w-9 shrink-0 items-center justify-center rounded-lg border border-ink/30 font-display text-sm font-bold",
+                      toneBg[item.tone],
+                    )}
+                  >
+                    {item.number}
+                  </span>
+                  <span className="font-display text-xl font-semibold text-ink">{item.label}</span>
+                  <Sparkle className="ml-auto h-4 w-4 text-ink/25 transition-all group-hover:scale-125 group-hover:text-purple" />
+                </Link>
+              </motion.div>
             );
           })}
         </nav>

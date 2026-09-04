@@ -27,9 +27,21 @@ export function CustomCursor() {
     const onMove = (e: PointerEvent) => {
       tx = e.clientX;
       ty = e.clientY;
-      if ((e.target as HTMLElement)?.closest("a, button, input, textarea, select, [contenteditable], [role=dialog], .no-cursor"))
+      const isInteractive = (e.target as HTMLElement)?.closest(
+        "a, button, input, textarea, select, [contenteditable], [role=dialog], .no-cursor",
+      );
+      if (isInteractive) {
         stick.style.opacity = "0.35";
-      else stick.style.opacity = "1";
+        stick.style.width = "36px";
+        stick.style.height = "36px";
+        stick.style.mixBlendMode = "normal";
+      } else {
+        stick.style.opacity = "1";
+        stick.style.width = "24px";
+        stick.style.height = "24px";
+        stick.style.mixBlendMode = "multiply";
+        stick.style.backgroundColor = "color-mix(in srgb, var(--lemon) 70%, transparent)";
+      }
     };
     const loop = () => {
       x += (tx - x) * 0.22;

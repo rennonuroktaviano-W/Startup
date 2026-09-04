@@ -2,6 +2,8 @@ import type { Metadata } from "next";
 import { Fredoka, Plus_Jakarta_Sans } from "next/font/google";
 import { siteConfig } from "@/lib/site";
 import { getPublicSettings, themeVariables } from "@/lib/public-settings";
+import { organizationJsonLd } from "@/lib/json-ld";
+import { JsonLd } from "@/components/seo/json-ld";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -59,24 +61,19 @@ export default async function RootLayout({ children }: { children: React.ReactNo
     .filter(Boolean)
     .join(" ");
 
-  const organizationJsonLd = {
-    "@context": "https://schema.org",
-    "@type": "Organization",
-    name: settings.brand.name,
-    url: siteConfig.siteUrl,
+  const organizationSchema = organizationJsonLd({
     email: settings.contact.email,
-    description: settings.brand.description,
-    sameAs: [`https://wa.me/${settings.contact.whatsapp}`, ...settings.contact.social.map((s) => s.url)],
-  };
+    sameAs: [
+      `https://wa.me/${settings.contact.whatsapp}`,
+      ...settings.contact.social.map((s) => s.url),
+    ],
+  });
 
   return (
     <html lang="id" className={htmlClass}>
       <head>
         <style dangerouslySetInnerHTML={{ __html: `:root{${themeCss};}` }} />
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(organizationJsonLd) }}
-        />
+        <JsonLd data={organizationSchema} />
       </head>
       <body className="flex min-h-full flex-col">{children}</body>
     </html>
