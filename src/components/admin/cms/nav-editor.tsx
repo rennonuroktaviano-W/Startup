@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import { LoaderCircle, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Save, Eye, EyeOff } from "lucide-react";
+import { LoaderCircle, Plus, Trash2, GripVertical, ArrowUp, ArrowDown, Save, Eye, EyeOff, Star } from "lucide-react";
 import { reorderNavigation, upsertNavigationItem, deleteNavigationItem } from "@/actions/navigation";
 import { ToyButton } from "@/components/ui/button";
 
@@ -35,12 +35,24 @@ export function NavEditor({ initial }: { initial: NavItem[] }) {
     }
   };
 
-  const saveOrder = async () => {
+  const saveAll = async () => {
     setLoading(true);
     setMessage("");
     try {
+      // Persist order + seluruh edit label/href/type/CTA/visibility.
       await reorderNavigation(items.map((it) => it.id));
-      setMessage("Urutan tersimpan.");
+      for (const it of items) {
+        await upsertNavigationItem({
+          id: it.id,
+          label: it.label,
+          href: it.href,
+          type: it.type,
+          isCta: it.isCta,
+          isVisible: it.isVisible,
+          desktopOrder: it.desktopOrder,
+        });
+      }
+      setMessage("Perubahan tersimpan.");
     } catch (err) {
       setMessage(err instanceof Error ? err.message : "Gagal menyimpan.");
     } finally {
@@ -70,6 +82,16 @@ export function NavEditor({ initial }: { initial: NavItem[] }) {
             </select>
             <button
               type="button"
+              onClick={() => update(i, { isCta: !item.isCta })}
+              aria-pressed={item.isCta}
+              aria-label="Tandai sebagai CTA"
+              title="Tandai sebagai CTA"
+              className={`flex h-9 items-center gap-1 rounded-lg border-2 px-2 text-xs font-bold ${item.isCta ? "border-ink bg-purple text-white" : "border-dashed bg-surface text-ink/50"}`}
+            >
+              <Star className="h-3.5 w-3.5" fill={item.isCta ? "currentColor" : "none"} /> CTA
+            </button>
+            <button
+              type="button"
               onClick={() => update(i, { isVisible: !item.isVisible })}
               aria-label={item.isVisible ? "Sembunyikan" : "Tampilkan"}
               className={`rounded-lg border-2 p-1 ${item.isVisible ? "border-ink bg-surface" : "border-dashed opacity-50"}`}
@@ -94,9 +116,9 @@ export function NavEditor({ initial }: { initial: NavItem[] }) {
       </div>
 
       <div className="flex items-center gap-3">
-        <ToyButton onClick={saveOrder} disabled={loading} className="bg-purple text-white">
+        <ToyButton onClick={saveAll} disabled={loading} className="bg-purple text-white">
           {loading ? <LoaderCircle className="h-4 w-4 animate-spin" /> : <Save className="h-4 w-4" />}
-          Simpan Urutan
+          Simpan Perubahan
         </ToyButton>
         {message && <span className="text-xs font-semibold text-ink/70">{message}</span>}
       </div>
