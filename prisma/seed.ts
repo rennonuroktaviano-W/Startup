@@ -1,7 +1,7 @@
 import { PrismaClient, FAQCategory } from "@prisma/client";
 import { hash } from "argon2";
 import { siteConfig } from "../src/lib/site";
-import { servicesList, homeFaqs, projectsList } from "../src/lib/content";
+import { servicesList, homeFaqs, projectsList, budgetRanges } from "../src/lib/content";
 
 const prisma = new PrismaClient();
 
@@ -46,7 +46,7 @@ async function seedSettings() {
     {
       key: "form.budget_ranges",
       group: "contact",
-      valueJson: siteConfig.budgets,
+      valueJson: budgetRanges,
       isPublic: true,
     },
     {

@@ -7,6 +7,7 @@ import {
   SwatchBook,
   Wrench,
 } from "lucide-react";
+import { siteConfig } from "@/lib/site";
 
 export type ServiceTone = "purple" | "lemon" | "sky" | "mint" | "coral";
 export type ProjectType = "CLIENT" | "CONCEPT";
@@ -86,7 +87,7 @@ export const budgetRanges = [
   { value: "not-sure", label: "Belum tahu, butuh konsultasi" },
 ];
 
-export const responseTimeText = "dalam 1×24 jam kerja";
+export const responseTimeText = siteConfig.responseTime;
 
 const services: Service[] = [
   {

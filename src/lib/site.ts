@@ -11,13 +11,6 @@ export const siteConfig = {
   defaultOgTitle: "KotakIde Studio — Studio Website & Aplikasi",
   defaultOgDescription:
     "Dari ide kecil jadi produk digital yang enak dipakai. Website, web app, dan dashboard yang hidup dan mudah dikelola.",
-  budgets: [
-    { key: "under-5", label: "Di bawah Rp5 juta" },
-    { key: "5to10", label: "Rp5–10 juta" },
-    { key: "10to25", label: "Rp10–25 juta" },
-    { key: "over-25", label: "Di atas Rp25 juta" },
-    { key: "unknown", label: "Belum tahu, butuh konsultasi" },
-  ],
 } as const;
 
 export const whatsappLink = (message?: string) =>

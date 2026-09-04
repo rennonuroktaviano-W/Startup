@@ -36,7 +36,7 @@ export default async function HomePage() {
     getPublicMetrics(),
     getPublishedArticles(),
   ]);
-  const featured = projects.filter((p) => p.projectType === "CONCEPT" || true).slice(0, 3);
+  const featured = projects.slice(0, 3);
   const hasWork = featured.length > 0;
   const hasServices = services.length > 0;
 

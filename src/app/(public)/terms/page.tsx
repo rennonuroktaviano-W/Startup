@@ -28,7 +28,7 @@ export default function TermsPage() {
       <h2>Konten milik klien</h2>
       <ul>
         <li>Kamu menjamin punya hak atas konten dan aset yang kamu serahkan.</li>
-        <li>Pihak [NAMA PERUSAHAAN LEGAL] (placeholder, akan diperbarui dari CMS) tidak bertanggung jawab atas pelanggaran hak cipta konten yang diunggah klien.</li>
+        <li>Pihak {siteConfig.name} tidak bertanggung jawab atas pelanggaran hak cipta konten yang diunggah klien.</li>
         <li>Konten yang melanggar hukum atau bertentangan dengan nilai kami dapat ditolak.</li>
       </ul>
 

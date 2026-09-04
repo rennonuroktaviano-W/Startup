@@ -44,6 +44,23 @@ async function adminLogin(page: Page) {
   await expect(page).toHaveURL(/\/admin\/dashboard/, { timeout: 15_000 });
 }
 
+// Fields yang didapat lewat client-side (soft) navigation bisa direset ke nilai
+// awal saat React selesai hydration. Coba fill ulang sampai nilainya menempel.
+async function fillAfterHydration(page: Page, locator: ReturnType<Page["getByPlaceholder"]>, value: string) {
+  for (let i = 0; i < 15; i++) {
+    await locator.fill(value);
+    try {
+      await expect(locator).toHaveValue(value, { timeout: 500 });
+      return;
+    } catch {
+      // hydration masih berjalan; tunggu sebentar lalu isi ulang
+    }
+    await page.waitForTimeout(250);
+  }
+  await locator.fill(value);
+  await expect(locator).toHaveValue(value);
+}
+
 test.describe.configure({ mode: "serial" });
 
 test("§33.3 alur lengkap: brief → prospek di admin → konsep project dipublikasi", async ({ page }) => {
@@ -68,8 +85,7 @@ test("§33.3 alur lengkap: brief → prospek di admin → konsep project dipubli
   // 4) Admin: tambah catatan internal.
   const noteInput = page.getByPlaceholder(/Catat hasil diskusi/);
   await expect(noteInput).toBeVisible();
-  await noteInput.fill("Catatan dari sesi e2e.");
-  await expect(noteInput).toHaveValue("Catatan dari sesi e2e.");
+  await fillAfterHydration(page, noteInput, "Catatan dari sesi e2e.");
   await page.getByRole("button", { name: /tambah catatan/i }).click();
   await expect(page.getByText("Catatan dari sesi e2e.")).toBeVisible();
 

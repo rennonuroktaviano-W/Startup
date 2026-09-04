@@ -205,7 +205,7 @@ export function ProjectBriefForm({ prefillType = "" }: { prefillType?: string })
           {result.referenceNumber}
         </p>
         <p className="mt-4 text-sm text-ink/70">
-          Kami akan menghubungimu {responseTimeText}. Mau lebih cepat?
+          Kami akan menghubungimu, {responseTimeText}. Mau lebih cepat?
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-3">
           <ToyButton href={whatsappLink(`Halo, saya ${form.name}. Saya baru kirim project brief nomor ${result.referenceNumber}.`)}>
