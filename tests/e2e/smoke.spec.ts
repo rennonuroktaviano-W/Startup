@@ -36,4 +36,20 @@ test("alur admin: guard redirect dan login menuju dashboard", async ({ page }) =
   // Berhasil masuk: kembali ke dashboard admin (shell admin tampil).
   await expect(page).toHaveURL(/\/admin\/dashboard/, { timeout: 15_000 });
   await expect(page.getByRole("link", { name: /dashboard/i }).first()).toBeVisible();
+
+  // Navigasi lewat sidebar harus tetap mendarat dari halaman selain dashboard.
+  const adminNav = page.locator('nav[aria-label="Navigasi admin"]');
+  await adminNav.getByRole("link", { name: "Prospek", exact: true }).click();
+  await expect(page).toHaveURL(/\/admin\/leads$/, { timeout: 15_000 });
+  await expect(adminNav.getByRole("link", { name: "Prospek", exact: true })).toBeVisible();
+
+  await adminNav.getByRole("link", { name: "Blog", exact: true }).click();
+  await expect(page).toHaveURL(/\/admin\/blog$/, { timeout: 15_000 });
+  await expect(adminNav.getByRole("link", { name: "Blog", exact: true })).toBeVisible();
+
+  // Indikator "Memuat…" harus muncul setiap klik sidebar, termasuk dari halaman non-dashboard.
+  await adminNav.getByRole("link", { name: "Prospek", exact: true }).click();
+  await expect(page.getByRole("status").filter({ hasText: "Memuat" })).toBeVisible({ timeout: 2_000 });
+  await expect(page).toHaveURL(/\/admin\/leads$/, { timeout: 15_000 });
+  await expect(adminNav.getByRole("link", { name: "Prospek", exact: true })).toBeVisible();
 });

@@ -61,18 +61,18 @@ export function NavigationIndicator() {
   }, [clearAll, stop]);
 
   // Navigasi benar-benar mendarat → beri jeda sebentar lalu sembunyikan.
+  // Jangan clearAll(): kalau navigasi mendarat sebelum timer show sempat berjalan,
+  // indikator tetap muncul sebentar (hidup di SHOW_DELAY, mati SETTLE_DELAY setelah mendarat).
   useEffect(() => {
     if (!activeRef.current) return;
-    clearAll();
     timersRef.current.settle = window.setTimeout(() => {
       activeRef.current = false;
       setVisible(false);
     }, SETTLE_DELAY);
-  }, [pathname, clearAll]);
+  }, [pathname]);
 
   useEffect(() => {
     const onClick = (e: MouseEvent) => {
-      if (activeRef.current) return;
       if (e.button !== 0) return;
       if (e.defaultPrevented) return;
       if (e.metaKey || e.ctrlKey || e.shiftKey || e.altKey) return;
