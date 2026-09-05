@@ -6,6 +6,7 @@ import { LoaderCircle, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { upsertBlogPost } from "@/actions/content";
 import { ToyButton } from "@/components/ui/button";
+import { signalNavigationStart } from "@/components/ui/navigation-indicator";
 
 type Input = {
   id?: string;
@@ -74,7 +75,10 @@ export function BlogPostForm({
         categoryIds: form.categoryIds.length ? form.categoryIds : undefined,
         tagIds: form.tagIds.length ? form.tagIds : undefined,
       });
-      if (res.ok) router.push("/admin/blog");
+      if (res.ok) {
+        signalNavigationStart();
+        router.push("/admin/blog");
+      }
     } catch (err) {
       setServerError(err instanceof Error ? err.message : "Gagal menyimpan.");
     } finally {

@@ -6,6 +6,7 @@ import { LoaderCircle, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { upsertService } from "@/actions/services";
 import { ToyButton } from "@/components/ui/button";
+import { signalNavigationStart } from "@/components/ui/navigation-indicator";
 
 type Input = {
   id?: string;
@@ -59,7 +60,10 @@ export function ServiceForm({ initial }: { initial?: Input }) {
         metaTitle: form.metaTitle || form.name,
         metaDescription: form.metaDescription || form.shortDescription,
       });
-      if (res.ok) router.push("/admin/services");
+      if (res.ok) {
+        signalNavigationStart();
+        router.push("/admin/services");
+      }
     } catch (err) {
       setServerError(err instanceof Error ? err.message : "Gagal menyimpan.");
     } finally {

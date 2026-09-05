@@ -6,6 +6,7 @@ import { LoaderCircle, LogIn } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { login } from "@/actions/auth";
 import { ToyButton } from "@/components/ui/button";
+import { signalNavigationStart } from "@/components/ui/navigation-indicator";
 
 export function LoginForm() {
   const router = useRouter();
@@ -24,6 +25,7 @@ export function LoginForm() {
     const res = await login({ email, password });
     setLoading(false);
     if (res.ok) {
+      signalNavigationStart();
       router.push("/admin/dashboard");
       router.refresh();
     } else {

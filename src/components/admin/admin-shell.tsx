@@ -4,6 +4,8 @@ import { siteConfig } from "@/lib/site";
 import type { SessionUser } from "@/lib/auth/session";
 import { logout } from "@/actions/auth";
 import { AdminMobileNav, type AdminMobileNavGroup } from "@/components/admin/admin-mobile-nav";
+import { SidebarLink } from "@/components/admin/sidebar-link";
+import { PageTransition } from "@/components/motion/page-transition";
 import { toySwitchFromRole } from "@/lib/admin-ui";
 import { can, type Capability } from "@/lib/permissions";
 
@@ -107,9 +109,12 @@ export function AdminShell({
                 </p>
                 <ul className="space-y-1">
                   {group.items.map((item) => (
-                    <li key={item.href}>
-                      <SidebarLink item={item} />
-                    </li>
+                    <SidebarLink
+                      key={item.href}
+                      label={item.label}
+                      href={item.href}
+                      iconKey={item.iconKey}
+                    />
                   ))}
                 </ul>
               </div>
@@ -152,21 +157,11 @@ export function AdminShell({
               </button>
             </form>
           </header>
-          <main className="min-w-0 flex-1 px-4 py-6 lg:px-8 lg:py-8">{children}</main>
+          <main className="min-w-0 flex-1 px-4 py-6 lg:px-8 lg:py-8">
+            <PageTransition>{children}</PageTransition>
+          </main>
         </div>
       </div>
     </div>
-  );
-}
-
-function SidebarLink({ item }: { item: AdminNavItem }) {
-  const Icon = item.icon;
-  return (
-    <Link
-      href={item.href}
-      className="flex items-center gap-2.5 rounded-xl px-3 py-2 text-sm font-semibold text-ink/70 transition-colors hover:bg-ink/5 hover:text-ink"
-    >
-      <Icon className="h-4 w-4" /> {item.label}
-    </Link>
   );
 }

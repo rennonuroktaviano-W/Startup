@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { upsertPage } from "@/actions/pages";
+import { signalNavigationStart } from "@/components/ui/navigation-indicator";
 
 interface FormState {
   title: string;
@@ -63,6 +64,7 @@ export function PageForm({ initial }: { initial?: Partial<FormState> & { id?: st
       return;
     }
     if (!initial?.id) {
+      signalNavigationStart();
       router.push(`/admin/pages/${res.id}/edit`);
     }
     router.refresh();

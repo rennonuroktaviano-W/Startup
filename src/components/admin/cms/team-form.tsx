@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { upsertTeamMember } from "@/actions/content";
 import { ToyButton } from "@/components/ui/button";
 import { FilePicker, type FilePickerValue } from "@/components/admin/cms/file-picker";
+import { signalNavigationStart } from "@/components/ui/navigation-indicator";
 
 export function TeamMemberForm({
   initial,
@@ -51,6 +52,7 @@ export function TeamMemberForm({
         sortOrder: form.sortOrder,
         photoMediaId: photo?.id ?? undefined,
       });
+      signalNavigationStart();
       router.push("/admin/team");
       router.refresh();
     } catch (e) {

@@ -93,8 +93,8 @@ export default async function AdminDashboardPage() {
       </div>
 
       <div className="mt-6 grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-4">
-        {widgets.map((w) => (
-          <WidgetCard key={w.label} {...w} />
+        {widgets.map((w, i) => (
+          <WidgetCard key={w.label} {...w} enterDelay={i * 45} />
         ))}
       </div>
 
@@ -180,17 +180,20 @@ function WidgetCard({
   icon: Icon,
   tone,
   href,
+  enterDelay = 0,
 }: {
   label: string;
   value: number | string;
   icon: React.ComponentType<{ className?: string }>;
   tone: string;
   href: string;
+  enterDelay?: number;
 }) {
   return (
     <Link
       href={href}
-      className="rounded-2xl border-2 border-ink bg-surface p-4 shadow-[3px_3px_0_0_var(--ink)] transition-transform hover:-translate-y-0.5"
+      style={{ animationDelay: `${enterDelay}ms` }}
+      className="animate-pop rounded-2xl border-2 border-ink bg-surface p-4 shadow-[3px_3px_0_0_var(--ink)] transition-transform hover:-translate-y-0.5"
     >
       <span className={`flex h-9 w-9 items-center justify-center rounded-lg border-2 border-ink ${tone}`}>
         <Icon className="h-4 w-4" />

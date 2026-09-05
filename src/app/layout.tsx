@@ -4,6 +4,7 @@ import { siteConfig } from "@/lib/site";
 import { getPublicSettings, themeVariables } from "@/lib/public-settings";
 import { organizationJsonLd } from "@/lib/json-ld";
 import { JsonLd } from "@/components/seo/json-ld";
+import { NavigationIndicator } from "@/components/ui/navigation-indicator";
 import "./globals.css";
 
 const fredoka = Fredoka({
@@ -75,7 +76,10 @@ export default async function RootLayout({ children }: { children: React.ReactNo
         <style dangerouslySetInnerHTML={{ __html: `:root{${themeCss};}` }} />
         <JsonLd data={organizationSchema} />
       </head>
-      <body className="flex min-h-full flex-col">{children}</body>
+      <body className="flex min-h-full flex-col">
+        {children}
+        <NavigationIndicator />
+      </body>
     </html>
   );
 }

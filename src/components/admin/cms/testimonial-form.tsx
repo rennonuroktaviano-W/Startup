@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils";
 import { upsertTestimonial } from "@/actions/content";
 import { ToyButton } from "@/components/ui/button";
 import { FilePicker, type FilePickerValue } from "@/components/admin/cms/file-picker";
+import { signalNavigationStart } from "@/components/ui/navigation-indicator";
 
 export function TestimonialForm({
   initial,
@@ -56,6 +57,7 @@ export function TestimonialForm({
         sortOrder: form.sortOrder,
         avatarMediaId: avatar?.id ?? undefined,
       });
+      signalNavigationStart();
       router.push("/admin/testimonials");
       router.refresh();
     } catch (e) {

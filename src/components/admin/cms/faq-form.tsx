@@ -6,6 +6,7 @@ import { LoaderCircle, Save } from "lucide-react";
 import { cn } from "@/lib/utils";
 import { upsertFaq } from "@/actions/content";
 import { ToyButton } from "@/components/ui/button";
+import { signalNavigationStart } from "@/components/ui/navigation-indicator";
 
 type Input = {
   id?: string;
@@ -52,7 +53,10 @@ export function FaqForm({ initial }: { initial?: Input }) {
         sortOrder: form.sortOrder,
         status: form.status as "DRAFT" | "PUBLISHED",
       });
-      if (res.ok) router.push("/admin/faqs");
+      if (res.ok) {
+        signalNavigationStart();
+        router.push("/admin/faqs");
+      }
     } catch (err) {
       setServerError(err instanceof Error ? err.message : "Gagal menyimpan.");
     } finally {

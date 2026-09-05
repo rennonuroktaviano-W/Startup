@@ -6,6 +6,7 @@ import { LoaderCircle, Save } from "lucide-react";
 import { upsertClient } from "@/actions/content";
 import { ToyButton } from "@/components/ui/button";
 import { FilePicker, type FilePickerValue } from "@/components/admin/cms/file-picker";
+import { signalNavigationStart } from "@/components/ui/navigation-indicator";
 
 export function ClientForm({
   initial,
@@ -46,6 +47,7 @@ export function ClientForm({
         sortOrder: form.sortOrder,
         logoMediaId: logo?.id ?? undefined,
       });
+      signalNavigationStart();
       router.push("/admin/clients");
       router.refresh();
     } catch (e) {
