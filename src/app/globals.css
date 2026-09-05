@@ -195,6 +195,33 @@ html.motion-paused *::after {
   animation: wiggle 3s ease-in-out infinite;
 }
 
+/* Ambient background blob mesh (public shell) */
+@keyframes blob-drift {
+  0%,
+  100% {
+    transform: translate3d(0, 0, 0) scale(1) rotate(0deg);
+  }
+  33% {
+    transform: translate3d(9vmin, -6vmin, 0) scale(1.18) rotate(8deg);
+  }
+  66% {
+    transform: translate3d(-7vmin, 7vmin, 0) scale(0.88) rotate(-7deg);
+  }
+}
+
+.ambient-blob {
+  will-change: transform;
+  animation: blob-drift 18s ease-in-out infinite;
+}
+
+html.motion-calm .ambient-blob {
+  animation-duration: 60s !important;
+  animation-iteration-count: 1 !important;
+}
+html.motion-extra .ambient-blob {
+  animation-duration: 9s !important;
+}
+
 /* Filter grid animation */
 .filter-grid {
   transition: all 0.35s cubic-bezier(0.2, 0.9, 0.3, 1);

@@ -11,6 +11,9 @@ test("alur publik: home, work (concept) dan navigasi float berfungsi", async ({ 
   // Hero dan CTA utama terlihat.
   await expect(page.getByRole("heading", { level: 1 }).first()).toBeVisible();
 
+  // Background ambient (blob mesh) terpasang di halaman publik.
+  await expect(page.locator("[data-ambient-bg]")).toHaveCount(1);
+
   // Tidak ada navbar/footer tradisional.
   await expect(page.locator("header nav")).toHaveCount(0);
   await expect(page.locator("footer")).toHaveCount(0);

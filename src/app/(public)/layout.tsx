@@ -1,5 +1,6 @@
 import { Toaster } from "sonner";
 import { FloatingNav } from "@/components/public/floating-nav";
+import { AmbientBackground } from "@/components/public/ambient-background";
 import { ClosingPlayground } from "@/components/public/closing-playground";
 import { VisibilityPause } from "@/components/public/visibility-pause";
 import { PageTransition } from "@/components/motion/page-transition";
@@ -20,6 +21,7 @@ export default async function PublicLayout({ children }: { children: React.React
         Lompat ke konten
       </a>
       <FloatingNav brandName={settings.brand.name} />
+      <AmbientBackground />
       <PageTransition>
         <main id="main">{children}</main>
       </PageTransition>
